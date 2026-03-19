@@ -1444,7 +1444,7 @@ function saveMatSettings() {
   showToast('Pengaturan disimpan!');
 }
 
-const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbybMOoACap_acrJMuNwsmrgrS0QvXjis4vKyVDfZu1PP1bMqAM1KY8IJDkj5ID8_ybTHQ/exec';
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby71UEvDKjxoZmpOO51d9LiYTEMer7Xr6WDhKdmzAj1PqFNaT0MWc5s74hukansYLpQwA/exec';
 
 // ── CORS-SAFE FETCH untuk file lokal ──
 // Apps Script tidak support CORS dari file://, pakai no-cors + fallback
@@ -1639,33 +1639,40 @@ async function kirimMaterial() {
 
   // Reset
   matItems=[]; matItemCounter=0; renderMatItems(); addMatItem();
+
+  // Pindah otomatis ke tab Tracking supaya user lihat request masuk
+  setTimeout(() => matTab('tracking'), 600);
 }
 
 // ── TRACKING ──
 async function loadTracking() {
   const el = document.getElementById('mt-list');
-  el.innerHTML = '<div class="no-data">Memuat...</div>';
   const ld = S.activeLoc ? getLD(S.activeLoc) : null;
-  const scriptUrl = (ld && ld.scriptUrl) || DEFAULT_SCRIPT_URL;
   const loc = S.locations.find(l=>l.id===S.activeLoc);
   const sheetName = loc ? loc.name : '';
-  let rows = [];
 
+  // Tampilkan localStorage dulu langsung tanpa tunggu fetch
+  let rows = [];
+  if(ld && ld.pendingRequests && ld.pendingRequests.length) {
+    rows = [...ld.pendingRequests];
+  }
+  trackingData = rows;
+  renderTracking(); // tampil dulu dari localStorage
+
+  // Kemudian coba fetch dari Sheets (background)
+  const scriptUrl = (ld && ld.scriptUrl) || DEFAULT_SCRIPT_URL;
   try {
     const json = await getFromScript(scriptUrl, { action: 'getRequests', sheetName });
-    if(json.status === 'ok') rows = json.data.filter(r => r.status === 'Pending');
-    // status 'local' = CORS gagal, lanjut pakai localStorage
-  } catch(e) { /* silent */ }
-
-  // Merge localStorage pending (items not yet in sheets)
-  if(ld && ld.pendingRequests) {
-    ld.pendingRequests.forEach(p => {
-      if(!rows.find(r => r.rowId === p.rowId)) rows.push(p);
-    });
-  }
-
-  trackingData = rows;
-  renderTracking();
+    if(json.status === 'ok') {
+      const fromSheet = json.data.filter(r => r.status === 'Pending');
+      // Merge: tambah dari sheet yang belum ada di localStorage
+      fromSheet.forEach(r => {
+        if(!rows.find(x => x.rowId === r.rowId)) rows.push(r);
+      });
+      trackingData = rows;
+      renderTracking(); // update dengan data dari sheet
+    }
+  } catch(e) { /* tetap pakai localStorage */ }
 }
 
 function renderTracking() {
