@@ -907,45 +907,12 @@ textarea.pg-input { resize:none; height:60px; }
         <div id="ms-list"><div class="no-data">Stok gudang kosong.</div></div>
       </div>
 
-      <!-- Floating settings button -->
-      <div style="position:relative;height:0">
-        <button onclick="openMatSettings()" style="position:absolute;bottom:48px;right:18px;width:40px;height:40px;border-radius:50%;background:#1a1a1a;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.15)">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
-          </svg>
-        </button>
-      </div>
-      <div class="page-nav">
+            <div class="page-nav">
         <div class="nav-btn" style="background:rgba(0,0,0,.2)"></div><div class="nav-btn home" style="background:rgba(0,0,0,.2)"></div><div class="nav-btn" style="background:rgba(0,0,0,.2)"></div>
       </div>
     </div>
 
-    <!-- OVERLAY: MATERIAL SETTINGS -->
-    <div class="overlay" id="mat-settings-ov" onclick="bgClose(event,'mat-settings-ov')">
-      <div class="sheet">
-        <div class="sheet-handle"></div>
-        <div class="sheet-hd">
-          <div class="sheet-ttl">Pengaturan Material</div>
-          <button class="sh-close" onclick="closeOv('mat-settings-ov')">✕</button>
-        </div>
-        <div class="sheet-body">
-          <div class="f-group">
-            <div class="f-label">Nama Sheet Spreadsheet</div>
-            <input class="f-input" id="m-sheet-name" placeholder="Contoh: MaterialRequest">
-          </div>
-          <div class="f-group">
-            <div class="f-label">Apps Script URL</div>
-            <input class="f-input" id="m-script-url" placeholder="https://script.google.com/macros/s/...">
-          </div>
-          <div class="f-group">
-            <div class="f-label">No. WA Logistik (Pak Didi)</div>
-            <input class="f-input" id="m-wa-num" placeholder="628123456789">
-          </div>
-          <button class="save-btn" onclick="saveMatSettings()">Simpan Pengaturan</button>
-        </div>
-      </div>
-    </div>
+    
     <div class="overlay" id="konfirm-ov" onclick="bgClose(event,'konfirm-ov')">
       <div class="sheet">
         <div class="sheet-handle"></div>
@@ -1425,29 +1392,10 @@ let matItemCounter = 0;
 let stockData = []; // from sheets or localStorage
 let trackingData = [];
 
-function openMatSettings() {
-  const ld = S.activeLoc ? getLD(S.activeLoc) : null;
-  document.getElementById('m-sheet-name').value = ld ? (ld.sheetName||'') : '';
-  document.getElementById('m-script-url').value = ld ? (ld.scriptUrl||DEFAULT_SCRIPT_URL) : DEFAULT_SCRIPT_URL;
-  document.getElementById('m-wa-num').value = ld ? (ld.waLogistik||'') : '';
-  openOv('mat-settings-ov');
-}
-
-function saveMatSettings() {
-  if(!S.activeLoc) return;
-  const ld = getLD(S.activeLoc);
-  ld.sheetName = document.getElementById('m-sheet-name').value.trim();
-  ld.scriptUrl = document.getElementById('m-script-url').value.trim() || DEFAULT_SCRIPT_URL;
-  ld.waLogistik = document.getElementById('m-wa-num').value.trim();
-  save();
-  closeOv('mat-settings-ov');
-  showToast('Pengaturan disimpan!');
-}
-
-const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby71UEvDKjxoZmpOO51d9LiYTEMer7Xr6WDhKdmzAj1PqFNaT0MWc5s74hukansYLpQwA/exec';
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2q2bsqQyKMd8M7vm4qz4Gv5MdHBPQzc6OSDJJW50fS-9ZRwSh5_OOM5uXV7qTZfO9hQ/exec';
 
 function getScriptUrl() {
-  return (S.activeLoc ? getLD(S.activeLoc).scriptUrl : '') || DEFAULT_SCRIPT_URL;
+  return DEFAULT_SCRIPT_URL;
 }
 
 function getSheetName() {
@@ -1580,8 +1528,6 @@ async function kirimMaterial() {
   if(!tglPerlu) return showToast('Mohon isi Tanggal Diperlukan.');
 
   const tglReq = document.getElementById('m-tgl-request').value;
-  const ld2 = S.activeLoc ? getLD(S.activeLoc) : {};
-  const waNum = ld2.waLogistik || '';
   const loc = S.locations.find(l=>l.id===S.activeLoc);
   const lokasiNama = loc ? loc.name : '—';
 
@@ -1619,7 +1565,7 @@ async function kirimMaterial() {
     ? showToast('Request dikirim ke Spreadsheet & WhatsApp!')
     : showToast('WA dibuka. Cek koneksi internet untuk Spreadsheet.');
 
-  // Simpan ke localStorage per item (tiap item punya rowId sendiri)
+  // Simpan ke localStorage per item
   if(S.activeLoc) {
     const ld = getLD(S.activeLoc);
     if(!ld.pendingRequests) ld.pendingRequests = [];
@@ -1628,21 +1574,20 @@ async function kirimMaterial() {
         rowId: 'LOCAL_' + Date.now() + '_' + i,
         nama: m.nama, jumlah: m.jumlah, satuan: m.satuan,
         tglRequest: fmtDate(tglReq), tglDiperlukan: fmtDate(tglPerlu),
-        status: 'Pending', sheetName
+        status: 'Pending'
       });
     });
     save();
   }
 
-  // Open WA
-  const num = waNum.replace(/\D/g,'');
-  window.open(num ? `https://wa.me/${num}?text=${encodeURIComponent(waText)}` : `https://wa.me/?text=${encodeURIComponent(waText)}`, '_blank');
+  // Buka WA tanpa nomor — user pilih sendiri kontak/grupnya
+  window.open(`https://wa.me/?text=${encodeURIComponent(waText)}`, '_blank');
 
-  // Reset
+  // Reset form
   matItems=[]; matItemCounter=0; renderMatItems(); addMatItem();
 
-  // Pindah otomatis ke tab Tracking supaya user lihat request masuk
-  setTimeout(() => matTab('tracking'), 600);
+  // Pindah ke tab Tracking — data localStorage sudah tersimpan sebelum ini
+  matTab('tracking');
 }
 
 // ── TRACKING ──
@@ -1729,13 +1674,10 @@ function followUpWA(rowId) {
   if(!t) return;
   const loc = S.locations.find(l=>l.id===S.activeLoc);
   const lokasiNama = loc ? loc.name : '—';
-  const ld = S.activeLoc ? getLD(S.activeLoc) : null;
-  const waNum = ld ? (ld.waLogistik||'') : '';
   const nama = t.nama || t.items?.[0]?.nama || '—';
   const jmlSat = `${t.jumlah||''} ${t.satuan||''}`.trim();
-  const txt = `*Follow Up Material Belum Sampai*\n📍 ${lokasiNama}\n\n- ${nama}: ${jmlSat}\n\nMohon di proses Pak Didi semangat ya 🔥`;
-  const num = waNum.replace(/\D/g,'');
-  window.open(num ? `https://wa.me/${num}?text=${encodeURIComponent(txt)}` : `https://wa.me/?text=${encodeURIComponent(txt)}`, '_blank');
+  const txt = `*Follow Up Material Belum Sampai*\n📍 ${lokasiNama}\n\n- ${nama}: ${jmlSat}\n\nMohon segera diproses 🙏`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`, '_blank');
 }
 
 // ── KONFIRMASI PENERIMAAN ──
