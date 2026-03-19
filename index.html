@@ -1446,33 +1446,32 @@ function saveMatSettings() {
 
 const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby71UEvDKjxoZmpOO51d9LiYTEMer7Xr6WDhKdmzAj1PqFNaT0MWc5s74hukansYLpQwA/exec';
 
-// ── CORS-SAFE FETCH untuk file lokal ──
-// Apps Script tidak support CORS dari file://, pakai no-cors + fallback
-async function sendToScript(scriptUrl, payload) {
-  try {
-    const res = await fetch(scriptUrl, {
-      method: 'POST',
-      mode: 'no-cors', // bypass CORS — response jadi opaque
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(payload)
-    });
-    // no-cors = opaque response, kita tidak bisa baca hasilnya
-    // tapi request SUDAH sampai ke server → return sukses
-    return { status: 'ok' };
-  } catch(e) {
-    return { status: 'error', message: e.toString() };
-  }
+function getScriptUrl() {
+  return (S.activeLoc ? getLD(S.activeLoc).scriptUrl : '') || DEFAULT_SCRIPT_URL;
 }
 
-async function getFromScript(scriptUrl, params) {
-  try {
-    const qs = Object.entries(params).map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');
-    const res = await fetch(`${scriptUrl}?${qs}`, { mode: 'cors' });
-    return await res.json();
-  } catch(e) {
-    // Kalau CORS gagal (file lokal), return data dari localStorage saja
-    return { status: 'local', data: [] };
-  }
+function getSheetName() {
+  const loc = S.locations.find(l => l.id === S.activeLoc);
+  return loc ? loc.name : 'Sheet1';
+}
+
+// POST ke Apps Script
+async function scriptPost(payload) {
+  const url = getScriptUrl();
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  });
+  return await res.json();
+}
+
+// GET dari Apps Script
+async function scriptGet(params) {
+  const url = getScriptUrl();
+  const qs = Object.entries(params).map(([k,v]) => k+'='+encodeURIComponent(v)).join('&');
+  const res = await fetch(`${url}?${qs}`);
+  return await res.json();
 }
 
 function initMaterial() {
@@ -1582,11 +1581,9 @@ async function kirimMaterial() {
 
   const tglReq = document.getElementById('m-tgl-request').value;
   const ld2 = S.activeLoc ? getLD(S.activeLoc) : {};
-  const scriptUrl = ld2.scriptUrl || DEFAULT_SCRIPT_URL;
   const waNum = ld2.waLogistik || '';
   const loc = S.locations.find(l=>l.id===S.activeLoc);
   const lokasiNama = loc ? loc.name : '—';
-  const sheetName = lokasiNama; // sheet name = nama lokasi
 
   const btn = document.getElementById('m-kirim-btn');
   btn.innerHTML = `<span>Sending...</span>`;
@@ -1597,18 +1594,22 @@ async function kirimMaterial() {
   const itemLines = terisi.map(m => `- ${m.nama}: ${m.jumlah} ${m.satuan}`).join('\n');
   const waText = `*Request Material*\n📍 ${lokasiNama}\n📅 Tgl Request: ${fmtDate(tglReq)}\n⏳ Diperlukan: ${fmtDate(tglPerlu)}\n\n${itemLines}\n\nMohon Segera Diproses.`;
 
-  // Send to Sheets — pakai no-cors (bypass CORS dari file lokal)
-  // no-cors = request PASTI sampai ke server, response tidak bisa dibaca
+  // Kirim tiap item ke Sheets (satu item = satu baris)
   let sheetSent = false;
+  const sheet = getSheetName();
   try {
-    await sendToScript(scriptUrl, {
-      action: 'addRequest',
-      sheetName,
-      tglRequest: fmtDate(tglReq),
-      tglDiperlukan: fmtDate(tglPerlu),
-      items: terisi.map(m => ({ nama: m.nama, jumlah: m.jumlah, satuan: m.satuan }))
-    });
-    sheetSent = true; // tidak ada exception = request berhasil dikirim
+    for(const m of terisi) {
+      await scriptPost({
+        action: 'addRow',
+        sheet,
+        nama:          m.nama,
+        jumlah:        m.jumlah,
+        satuan:        m.satuan,
+        tglRequest:    fmtDate(tglReq),
+        tglDiperlukan: fmtDate(tglPerlu)
+      });
+    }
+    sheetSent = true;
   } catch(e) { sheetSent = false; }
 
   btn.innerHTML = `<svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L.054 23.077a.75.75 0 00.92.919l5.265-1.49A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.693-.506-5.234-1.389l-.374-.217-3.876 1.097 1.077-3.788-.234-.386A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg> Kirim Request (WA & Sheets)`;
@@ -1662,15 +1663,14 @@ async function loadTracking() {
   // Kemudian coba fetch dari Sheets (background)
   const scriptUrl = (ld && ld.scriptUrl) || DEFAULT_SCRIPT_URL;
   try {
-    const json = await getFromScript(scriptUrl, { action: 'getRequests', sheetName });
+    const json = await scriptGet({ action: 'getData', sheet: getSheetName() });
     if(json.status === 'ok') {
       const fromSheet = json.data.filter(r => r.status === 'Pending');
-      // Merge: tambah dari sheet yang belum ada di localStorage
       fromSheet.forEach(r => {
         if(!rows.find(x => x.rowId === r.rowId)) rows.push(r);
       });
       trackingData = rows;
-      renderTracking(); // update dengan data dari sheet
+      renderTracking();
     }
   } catch(e) { /* tetap pakai localStorage */ }
 }
@@ -1709,12 +1709,9 @@ async function batalRequest(rowId) {
   if(!confirm(`Batalkan request "${nama}"? Data akan dihapus dari Spreadsheet.`)) return;
 
   const ld = S.activeLoc ? getLD(S.activeLoc) : null;
-  const scriptUrl = (ld && ld.scriptUrl) || DEFAULT_SCRIPT_URL;
-  const loc = S.locations.find(l=>l.id===S.activeLoc);
-  const sheetName = loc ? loc.name : '';
   let ok = false;
   try {
-    const result = await sendToScript(scriptUrl, { action: 'deleteRow', rowId, sheetName });
+    const result = await scriptPost({ action: 'deleteRow', sheet: getSheetName(), rowId });
     ok = result.status === 'ok';
   } catch(e) {}
 
@@ -1765,17 +1762,14 @@ async function simpanKonfirmasi() {
   btn.textContent = 'Updating...'; btn.disabled = true;
 
   const ld = S.activeLoc ? getLD(S.activeLoc) : null;
-  const scriptUrl = (ld && ld.scriptUrl) || DEFAULT_SCRIPT_URL;
-  const loc = S.locations.find(l=>l.id===S.activeLoc);
-  const sheetName = loc ? loc.name : '';
   const today = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit', year:'numeric'});
 
   let ok = false;
   try {
-    const result = await sendToScript(scriptUrl, {
+    const result = await scriptPost({
       action: 'updateRow',
-      rowId, sheetName,
-      tglSampai: today,
+      sheet: getSheetName(),
+      rowId, tglSampai: today,
       pengantar, penerima, status
     });
     ok = result.status === 'ok';
