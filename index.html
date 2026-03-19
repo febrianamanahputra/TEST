@@ -1592,32 +1592,37 @@ async function kirimMaterial() {
 
 // ── TRACKING ──
 async function loadTracking() {
-  const el = document.getElementById('mt-list');
   const ld = S.activeLoc ? getLD(S.activeLoc) : null;
-  const loc = S.locations.find(l=>l.id===S.activeLoc);
-  const sheetName = loc ? loc.name : '';
 
-  // Tampilkan localStorage dulu langsung tanpa tunggu fetch
-  let rows = [];
-  if(ld && ld.pendingRequests && ld.pendingRequests.length) {
-    rows = [...ld.pendingRequests];
-  }
+  // Tampilkan localStorage dulu
+  let rows = ld && ld.pendingRequests ? [...ld.pendingRequests] : [];
   trackingData = rows;
-  renderTracking(); // tampil dulu dari localStorage
+  renderTracking();
 
-  // Kemudian coba fetch dari Sheets (background)
-  const scriptUrl = (ld && ld.scriptUrl) || DEFAULT_SCRIPT_URL;
+  // Fetch dari Sheets — jadikan sumber utama, hapus duplikat LOCAL
   try {
     const json = await scriptGet({ action: 'getData', sheet: getSheetName() });
     if(json.status === 'ok') {
       const fromSheet = json.data.filter(r => r.status === 'Pending');
-      fromSheet.forEach(r => {
-        if(!rows.find(x => x.rowId === r.rowId)) rows.push(r);
-      });
-      trackingData = rows;
-      renderTracking();
+      if(fromSheet.length) {
+        // Hapus LOCAL item yang namanya sama dengan item dari sheet
+        let merged = rows.filter(x => {
+          if(!x.rowId || !x.rowId.startsWith('LOCAL_')) return true;
+          return !fromSheet.find(s =>
+            String(s.nama||'').toLowerCase() === String(x.nama||'').toLowerCase()
+          );
+        });
+        // Tambah dari sheet yang belum ada
+        fromSheet.forEach(r => {
+          if(!merged.find(x => x.rowId === r.rowId)) merged.push(r);
+        });
+        // Sync localStorage
+        if(ld) { ld.pendingRequests = merged; save(); }
+        trackingData = merged;
+        renderTracking();
+      }
     }
-  } catch(e) { /* tetap pakai localStorage */ }
+  } catch(e) {}
 }
 
 function renderTracking() {
@@ -1727,21 +1732,27 @@ async function simpanKonfirmasi() {
     ok = result.status === 'ok';
   } catch(e) {}
 
-  // Update stok lokal
+  // Update stok lokal — tambah jumlah, nama sama digabung
   if(t && ld) {
     if(!ld.stock) ld.stock = {};
-    const nama = t.nama || t.items?.[0]?.nama || '';
-    const key = nama.toLowerCase();
-    if(!ld.stock[key]) ld.stock[key] = { nama, stok:0, satuan: t.satuan||'' };
-    ld.stock[key].stok += parseFloat(t.jumlah)||0;
-    if(ld.pendingRequests) ld.pendingRequests = ld.pendingRequests.filter(r=>r.rowId!==rowId);
+    const nama = t.nama || '';
+    const key  = nama.toLowerCase().trim();
+    if(key) {
+      if(!ld.stock[key]) ld.stock[key] = { nama, stok: 0, satuan: t.satuan||'' };
+      ld.stock[key].stok += parseFloat(t.jumlah) || 0;
+    }
+    // Hapus dari pendingRequests — match by rowId ATAU nama
+    ld.pendingRequests = (ld.pendingRequests||[]).filter(r =>
+      r.rowId !== rowId &&
+      !(String(r.nama||'').toLowerCase() === String(t.nama||'').toLowerCase())
+    );
     save();
   }
 
   trackingData = trackingData.filter(x=>(x.rowId||x.id)!==rowId);
   renderTracking();
   closeOv('konfirm-ov');
-  showToast(ok ? 'Status diupdate ke Spreadsheet dan Stok ditambahkan!' : 'Gagal update status. Cek koneksi.');
+  showToast(ok ? 'Done! Stok diperbarui & data masuk Spreadsheet.' : 'Done! Stok diperbarui (cek koneksi Spreadsheet).');
 }
 
 // ── STOCK ──
