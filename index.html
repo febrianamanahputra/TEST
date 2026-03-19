@@ -1656,7 +1656,12 @@ async function batalRequest(rowId) {
   const ld = S.activeLoc ? getLD(S.activeLoc) : null;
   let ok = false;
   try {
-    const result = await scriptPost({ action: 'deleteRow', sheet: getSheetName(), rowId });
+    const result = await scriptPost({
+      action: 'deleteRow',
+      sheet: getSheetName(),
+      rowId,
+      nama: t ? (t.nama || '') : ''
+    });
     ok = result.status === 'ok';
   } catch(e) {}
 
@@ -1706,19 +1711,23 @@ async function simpanKonfirmasi() {
   const ld = S.activeLoc ? getLD(S.activeLoc) : null;
   const today = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit', year:'numeric'});
 
+  const t = trackingData.find(x=>(x.rowId||x.id)===rowId);
+
   let ok = false;
   try {
     const result = await scriptPost({
       action: 'updateRow',
       sheet: getSheetName(),
-      rowId, tglSampai: today,
+      rowId,
+      nama:       t ? t.nama : '',
+      tglRequest: t ? t.tglRequest : '',
+      tglSampai: today,
       pengantar, penerima, status
     });
     ok = result.status === 'ok';
   } catch(e) {}
 
   // Update stok lokal
-  const t = trackingData.find(x=>(x.rowId||x.id)===rowId);
   if(t && ld) {
     if(!ld.stock) ld.stock = {};
     const nama = t.nama || t.items?.[0]?.nama || '';
