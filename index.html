@@ -60,7 +60,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 16px 22px 0;
+  padding: 10px 22px 0;
   position: relative;
   z-index: 1;
   overflow: hidden;
@@ -68,12 +68,13 @@ body {
   margin: 0 auto;
   width: 100%;
   min-height: 0;
+  height: 100%;
 }
 
 /* DATE */
 #month-big {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 96px;
+  font-size: clamp(56px, 15vw, 86px);
   font-weight: 800;
   font-style: normal;
   color: #1a1a1a;
@@ -125,12 +126,13 @@ body {
 #photo-section {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   position: relative;
   animation: fadeUp .7s ease both;
-  padding: 6px 0;
+  padding: 4px 0;
   min-height: 0;
+  overflow: hidden;
 }
 
 .deco { display: none; }
@@ -174,7 +176,7 @@ body {
 /* DOCK */
 #dock {
   flex-shrink:0;
-  padding: 0 0 max(10px, env(safe-area-inset-bottom, 10px));
+  padding: 0 0 max(8px, env(safe-area-inset-bottom, 8px));
   animation: fadeUp .85s ease both;
   max-width:480px;
   margin:0 auto;
@@ -185,7 +187,7 @@ body {
   display:flex;
   justify-content:center;
   gap:10px;
-  margin-bottom:10px;
+  margin-bottom:8px;
 }
 
 .app-icon {
@@ -213,10 +215,10 @@ body {
   background:rgba(0,0,0,0.04);
   border:1px solid rgba(0,0,0,0.08);
   border-radius:100px;
-  padding:9px 16px;
+  padding:8px 14px;
   cursor:pointer;
   transition:background .2s;
-  margin-bottom:10px;
+  margin-bottom:8px;
 }
 #loc-pill:active { background:rgba(0,0,0,0.07); }
 #loc-pill-text {
