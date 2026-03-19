@@ -60,28 +60,30 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 16px 22px 0;
+  padding: 10px 22px 0;
   position: relative;
   z-index: 1;
   overflow: hidden;
   max-width: 480px;
   margin: 0 auto;
   width: 100%;
+  min-height: 0;
 }
 
 /* DATE */
 #month-big {
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 96px;
+  font-size: clamp(48px, 13vw, 96px);
   font-weight: 800;
   font-style: normal;
   color: #1a1a1a;
   line-height: 1;
   letter-spacing: 1px;
   text-transform: uppercase;
-  margin-top: 8px;
+  margin-top: 0;
   margin-bottom: 0;
   display: block;
+  flex-shrink: 0;
   animation: fadeUp .5s ease both;
 }
 
@@ -127,14 +129,16 @@ body {
   justify-content: center;
   position: relative;
   animation: fadeUp .7s ease both;
-  padding: 0;
+  padding: 4px 0;
+  min-height: 0;
 }
 
 .deco { display: none; }
 
 #photo-ring {
-  width: 318px;
-  height: 370px;
+  width: min(318px, 90vw);
+  height: 100%;
+  max-height: 340px;
   border-radius: 0;
   padding: 0;
   background: none;
@@ -171,7 +175,7 @@ body {
 /* DOCK */
 #dock {
   flex-shrink:0;
-  padding: 0 0 16px;
+  padding: 0 0 max(10px, env(safe-area-inset-bottom, 10px));
   animation: fadeUp .85s ease both;
   max-width:480px;
   margin:0 auto;
@@ -182,12 +186,12 @@ body {
   display:flex;
   justify-content:center;
   gap:10px;
-  margin-bottom:12px;
+  margin-bottom:8px;
 }
 
 .app-icon {
-  width:50px; height:50px;
-  border-radius:15px;
+  width:clamp(42px,11vw,52px); height:clamp(42px,11vw,52px);
+  border-radius:14px;
   display:flex; align-items:center; justify-content:center;
   cursor:pointer;
   border:1.5px solid rgba(0,0,0,0.12);
@@ -213,7 +217,7 @@ body {
   padding:9px 16px;
   cursor:pointer;
   transition:background .2s;
-  margin-bottom:12px;
+  margin-bottom:8px;
 }
 #loc-pill:active { background:rgba(0,0,0,0.07); }
 #loc-pill-text {
@@ -892,17 +896,17 @@ textarea.pg-input { resize:none; height:60px; }
       <div id="mat-stock" class="page-body mat-panel" style="display:none">
         <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
           <input class="m-underline" id="ms-search" placeholder="Cari material..." oninput="filterStock()" style="flex:1">
-          <button onclick="clearZeroStock()" title="Hapus stok kosong" style="background:none;border:none;cursor:pointer;opacity:.4;padding:4px" title="Bersihkan stok 0">
+          <button onclick="openTambahStok()" style="background:#aaee00;border:none;border-radius:6px;padding:6px 10px;font-size:11px;font-weight:500;color:#2a4a00;cursor:pointer;white-space:nowrap">+ Tambah</button>
+          <button onclick="clearZeroStock()" title="Hapus stok 0" style="background:none;border:none;cursor:pointer;opacity:.45;padding:4px">
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
           </button>
-          <button onclick="loadStock()" style="background:none;border:none;cursor:pointer;opacity:.4;padding:4px">
+          <button onclick="loadStock()" title="Refresh" style="background:none;border:none;cursor:pointer;opacity:.45;padding:4px">
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
           </button>
         </div>
-        <!-- Laporan WA button -->
-        <button onclick="kirimLaporanStok()" style="width:100%;background:#25D366;border:none;padding:10px;font-size:12px;font-weight:500;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:0;margin-bottom:14px">
+        <button onclick="kirimLaporanStok()" style="width:100%;background:#25D366;border:none;padding:10px;font-size:12px;font-weight:500;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:8px;margin-bottom:14px">
           <svg width="14" height="14" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L.054 23.077a.75.75 0 00.92.919l5.265-1.49A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.693-.506-5.234-1.389l-.374-.217-3.876 1.097 1.077-3.788-.234-.386A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-          Laporan List Material
+          Laporan Stok ke WA
         </button>
         <div id="ms-list"><div class="no-data">Stok gudang kosong.</div></div>
       </div>
@@ -957,7 +961,35 @@ textarea.pg-input { resize:none; height:60px; }
       </div>
     </div>
 
-    <!-- DANA -->
+    <!-- OVERLAY: TAMBAH / EDIT STOK -->
+    <div class="overlay" id="stok-ov" onclick="bgClose(event,'stok-ov')">
+      <div class="sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-hd">
+          <div class="sheet-ttl" id="stok-ov-title">Tambah Material</div>
+          <button class="sh-close" onclick="closeOv('stok-ov')">✕</button>
+        </div>
+        <div class="sheet-body">
+          <input type="hidden" id="stok-edit-key">
+          <div class="f-group">
+            <div class="f-label">Nama Material</div>
+            <input class="f-input" id="stok-nama" placeholder="Nama material...">
+          </div>
+          <div style="display:flex;gap:10px">
+            <div class="f-group" style="flex:1">
+              <div class="f-label">Stok</div>
+              <input class="f-input" id="stok-jumlah" type="number" placeholder="0">
+            </div>
+            <div class="f-group" style="flex:1">
+              <div class="f-label">Satuan</div>
+              <input class="f-input" id="stok-satuan" placeholder="pcs, kg, m...">
+            </div>
+          </div>
+          <button class="save-btn" onclick="simpanStok()" style="margin-top:4px">Simpan</button>
+          <button id="stok-del-btn" onclick="hapusStok()" style="width:100%;background:none;border:1px solid rgba(200,50,50,.3);border-radius:10px;padding:11px;font-size:12px;color:#cc3300;cursor:pointer;margin-top:8px;display:none">Hapus Material</button>
+        </div>
+      </div>
+    </div>
     <div class="page" id="page-dana">
       <div class="page-sb">
         <div class="page-sb-time" id="pg-time-d">00:00</div>
@@ -1787,13 +1819,96 @@ function renderStock(filter='') {
   let data = filter ? stockData.filter(s=>s.nama.toLowerCase().includes(filter.toLowerCase())) : stockData;
   if(!data.length){ el.innerHTML=`<div class="no-data">${filter?'Material tidak ditemukan.':'Stok gudang kosong.'}</div>`; return; }
   el.innerHTML = data.map(s=>`
-    <div class="stock-row">
+    <div class="stock-row" onclick="openEditStok('${encodeURIComponent(s.nama)}')" style="cursor:pointer">
       <div class="stock-nama">${esc(s.nama)}</div>
-      <div class="stock-stok">${s.stok}</div>
-      <div class="stock-sat">${esc(s.satuan||'')}</div>
-      ${parseFloat(s.stok)===0?'<span class="stock-habis">HABIS</span>':''}
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        <div class="stock-stok" style="font-weight:600">${s.stok}</div>
+        <div class="stock-sat">${esc(s.satuan||'')}</div>
+        ${parseFloat(s.stok)===0?'<span class="stock-habis">HABIS</span>':''}
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="rgba(0,0,0,.25)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </div>
     </div>
   `).join('');
+}
+
+function openTambahStok() {
+  document.getElementById('stok-ov-title').textContent = 'Tambah Material';
+  document.getElementById('stok-edit-key').value = '';
+  document.getElementById('stok-nama').value = '';
+  document.getElementById('stok-jumlah').value = '';
+  document.getElementById('stok-satuan').value = '';
+  document.getElementById('stok-del-btn').style.display = 'none';
+  document.getElementById('stok-nama').removeAttribute('readonly');
+  openOv('stok-ov');
+}
+
+function openEditStok(encodedNama) {
+  const nama = decodeURIComponent(encodedNama);
+  const key  = nama.toLowerCase().trim();
+  const ld   = S.activeLoc ? getLD(S.activeLoc) : null;
+  const item = ld && ld.stock ? ld.stock[key] : stockData.find(s=>s.nama.toLowerCase()===key);
+  if(!item) return;
+  document.getElementById('stok-ov-title').textContent = 'Edit Stok';
+  document.getElementById('stok-edit-key').value = key;
+  document.getElementById('stok-nama').value = item.nama || nama;
+  document.getElementById('stok-jumlah').value = item.stok || 0;
+  document.getElementById('stok-satuan').value = item.satuan || '';
+  document.getElementById('stok-del-btn').style.display = 'block';
+  document.getElementById('stok-nama').setAttribute('readonly', true);
+  openOv('stok-ov');
+}
+
+function simpanStok() {
+  const key    = document.getElementById('stok-edit-key').value;
+  const nama   = document.getElementById('stok-nama').value.trim();
+  const jumlah = parseFloat(document.getElementById('stok-jumlah').value) || 0;
+  const satuan = document.getElementById('stok-satuan').value.trim();
+  if(!nama) return showToast('Isi nama material!');
+
+  const ld = S.activeLoc ? getLD(S.activeLoc) : null;
+  if(!ld) return showToast('Pilih lokasi dulu!');
+  if(!ld.stock) ld.stock = {};
+
+  if(key) {
+    // Edit — update stok & satuan
+    if(ld.stock[key]) {
+      ld.stock[key].stok   = jumlah;
+      ld.stock[key].satuan = satuan;
+    }
+    // Update stockData
+    const idx = stockData.findIndex(s=>s.nama.toLowerCase()===key);
+    if(idx>=0){ stockData[idx].stok=jumlah; stockData[idx].satuan=satuan; }
+  } else {
+    // Tambah baru
+    const newKey = nama.toLowerCase().trim();
+    if(ld.stock[newKey]) {
+      ld.stock[newKey].stok   += jumlah;
+      ld.stock[newKey].satuan  = satuan || ld.stock[newKey].satuan;
+    } else {
+      ld.stock[newKey] = { nama, stok: jumlah, satuan };
+    }
+    // Update stockData
+    const existing = stockData.find(s=>s.nama.toLowerCase()===newKey);
+    if(existing){ existing.stok+=jumlah; existing.satuan=satuan; }
+    else stockData.push({ nama, stok: jumlah, satuan });
+  }
+
+  save();
+  closeOv('stok-ov');
+  renderStock(document.getElementById('ms-search').value);
+  showToast('Stok disimpan!');
+}
+
+function hapusStok() {
+  const key = document.getElementById('stok-edit-key').value;
+  if(!key) return;
+  if(!confirm('Hapus material ini dari stok?')) return;
+  const ld = S.activeLoc ? getLD(S.activeLoc) : null;
+  if(ld && ld.stock) { delete ld.stock[key]; save(); }
+  stockData = stockData.filter(s=>s.nama.toLowerCase()!==key);
+  closeOv('stok-ov');
+  renderStock(document.getElementById('ms-search').value);
+  showToast('Material dihapus.');
 }
 
 function filterStock(){ renderStock(document.getElementById('ms-search').value); }
