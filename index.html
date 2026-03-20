@@ -1644,7 +1644,34 @@ function renderBarisList() {
 
     row.appendChild(ta);
 
-    // Area tag (jika sudah dipilih)
+    // Foto thumbnails dengan tombol share per foto
+    if(b.fotos && b.fotos.length > 0) {
+      const thumbRow = document.createElement('div');
+      thumbRow.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 2px;';
+      b.fotos.forEach((f, fi) => {
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'position:relative;width:56px;height:56px;border-radius:6px;overflow:hidden;flex-shrink:0;border:1px solid rgba(0,0,0,.08)';
+        // Thumbnail image
+        const img = document.createElement('img');
+        img.src = f.url;
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+        // Share button overlay
+        const shareBtn = document.createElement('button');
+        shareBtn.style.cssText = 'position:absolute;bottom:0;left:0;right:0;background:rgba(37,211,102,0.9);border:none;padding:3px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:2px';
+        shareBtn.innerHTML = `<svg width="10" height="10" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L.054 23.077a.75.75 0 00.92.919l5.265-1.49A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>`;
+        shareBtn.onclick = () => shareFoto(b.id, fi);
+        // Delete foto button (x kecil pojok kanan atas)
+        const xBtn = document.createElement('button');
+        xBtn.style.cssText = 'position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.55);border:none;color:white;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;line-height:1';
+        xBtn.textContent = '×';
+        xBtn.onclick = (e) => { e.stopPropagation(); delFoto(b.id, fi); };
+        wrap.appendChild(img);
+        wrap.appendChild(shareBtn);
+        wrap.appendChild(xBtn);
+        thumbRow.appendChild(wrap);
+      });
+      row.appendChild(thumbRow);
+    }
     if(b.area) {
       const areaTag = document.createElement('div');
       areaTag.style.cssText = 'display:inline-flex;align-items:center;gap:4px;background:#aaee00;border-radius:12px;padding:2px 8px 2px 6px;margin:2px 0 4px;cursor:pointer;width:fit-content';
@@ -1714,55 +1741,39 @@ function pilihanFoto(source) {
   input.multiple = true;
   if(source === 'camera') input.capture = 'environment';
 
-  input.addEventListener('change', async function(){
+  input.addEventListener('change', function(){
     const files = Array.from(this.files);
     if(!files.length) return;
-
     const b = barisState.find(x => x.id === _fotoTargetId);
-    const pek = b ? 'Pek. ' + b.teks.trim() : '';
-    const areaStr = b?.area ? ` | ${getAreaLabel(b.area)}` : '';
-    const caption = pek + areaStr;
+    if(!b) return;
+    if(!b.fotos) b.fotos = [];
 
-    // Coba Web Share API dulu (Android native share sheet)
-    const supported = typeof navigator.share === 'function';
-    const shareFiles = files.map((f, i) =>
-      f instanceof File ? f : new File([f], `foto_${i+1}.jpg`, { type: 'image/jpeg' })
-    );
-
-    let shared = false;
-
-    if(supported) {
-      try {
-        // Cek apakah bisa share file
-        const canShareFile = navigator.canShare && navigator.canShare({ files: shareFiles });
-        if(canShareFile) {
-          await navigator.share({ files: shareFiles, text: caption });
-          shared = true;
-        } else {
-          // Coba share tanpa file, hanya teks
-          await navigator.share({ text: caption });
-          shared = true;
-        }
-      } catch(err) {
-        if(err.name !== 'AbortError') {
-          // Share gagal bukan karena user cancel → fallback
-          shared = false;
-        } else {
-          // User cancel — tidak apa-apa
-          shared = true;
-        }
-      }
-    }
-
-    // Fallback: buka WA langsung dengan caption
-    if(!shared) {
-      const encoded = encodeURIComponent(caption);
-      window.open(`https://wa.me/?text=${encoded}`, '_blank');
-    }
+    let loaded = 0;
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        b.fotos.push({ blob: file, url: ev.target.result });
+        loaded++;
+        if(loaded === files.length) renderBarisList();
+      };
+      reader.readAsDataURL(file);
+    });
   });
-
-  // Penting: harus dipanggil langsung dalam user interaction
   input.click();
+}
+
+function shareFoto(barisId, fotoIdx) {
+  const b = barisState.find(x => x.id === barisId);
+  if(!b || !b.fotos || !b.fotos[fotoIdx]) return;
+  const foto = b.fotos[fotoIdx];
+  const pek = 'Pek. ' + b.teks.trim();
+  const areaStr = b.area ? ` | ${getAreaLabel(b.area)}` : '';
+  const caption = pek + areaStr;
+  const encoded = encodeURIComponent(caption);
+
+  // Buka WA dengan caption — user tinggal attach foto dari preview
+  // Ini paling reliable di semua Android
+  window.open(`https://wa.me/?text=${encoded}`, '_blank');
 }
 
 
