@@ -125,6 +125,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   position: relative;
   animation: fadeUp .7s ease both;
   padding: 0;
@@ -134,13 +135,15 @@ body {
 .deco { display: none; }
 
 #photo-ring {
-  width: 318px;
-  height: 248px;
+  width: 370px;
+  height: 430px;
   border-radius: 0;
   padding: 0;
   background: none;
   cursor: pointer;
   transition: transform .3s ease;
+  position: relative;
+  overflow: hidden;
 }
 #photo-ring:active { transform: scale(0.995); }
 
@@ -155,7 +158,7 @@ body {
   justify-content: center;
 }
 
-#photo-img { width:100%; height:100%; object-fit:cover; display:none; }
+#photo-img { width:100%; height:100%; object-fit:cover; display:none; position:absolute; inset:0; }
 
 #photo-hint {
   display:flex; flex-direction:column;
@@ -172,6 +175,7 @@ body {
 /* DOCK */
 #dock {
   flex-shrink:0;
+  width:100%;
   padding: 4px 0 24px;
   animation: fadeUp .85s ease both;
   max-width:480px;
@@ -182,6 +186,7 @@ body {
 #icons-row {
   display:flex;
   justify-content:center;
+  width:100%;
   gap:10px;
   margin-bottom:20px;
 }
@@ -242,14 +247,7 @@ body {
 
 #profile-tag {
   display:flex; align-items:center; gap:8px;
-  cursor:pointer;
-  padding: 10px 22px;
-  position:fixed;
-  bottom:0; left:0; right:0;
-  background:transparent;
-  z-index:100;
-  max-width:480px;
-  margin:0 auto;
+  cursor:pointer; padding:2px 0 4px;
 }
 
 #prof-av {
@@ -649,25 +647,10 @@ textarea.pg-input { resize:none; height:60px; }
     </div>
   </div>
 
-  <!-- EDIT MODE BUTTON -->
-  <button id="edit-mode-btn" onclick="toggleEditMode()" style="position:fixed;top:14px;right:16px;z-index:200;width:36px;height:36px;border-radius:50%;background:#1a1a1a;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2)">
-    <svg id="edit-icon" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-    </svg>
-  </button>
-
-  <!-- EDIT MODE BUTTON -->
-  <button id="edit-mode-btn" onclick="toggleEditMode()" style="position:fixed;top:14px;right:16px;z-index:9998;width:36px;height:36px;border-radius:50%;background:#1a1a1a;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2)">
-    <svg id="edit-icon-pen" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-    </svg>
-  </button>
 
   <!-- LAUNCHER -->
   <div id="launcher">
-    <div id="date-block" class="draggable-el" data-el="date-block">
+    <div id="date-block">
       <div id="month-big">JAN</div>
       <div id="date-line">
         <div id="day-name">Senin</div>
@@ -680,7 +663,7 @@ textarea.pg-input { resize:none; height:60px; }
       <div class="deco d1"></div>
       <div class="deco d2"></div>
       <div class="deco d3"></div>
-      <div id="photo-ring" class="draggable-el" data-el="photo-ring" onclick="document.getElementById('photo-file').click()">
+      <div id="photo-ring" onclick="document.getElementById('photo-file').click()">
         <div id="photo-inner">
           <img id="photo-img" alt="">
           <div id="photo-hint">
@@ -691,16 +674,13 @@ textarea.pg-input { resize:none; height:60px; }
             <span>tap upload</span>
           </div>
         </div>
-        <!-- Resize handle -->
-        <div id="photo-resize" style="display:none;position:absolute;bottom:4px;right:4px;width:20px;height:20px;background:rgba(170,238,0,0.9);border-radius:4px;cursor:se-resize;z-index:10;align-items:center;justify-content:center">
-          <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 8h6M6 4l2 4" stroke="#2a4a00" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
+
       </div>
       <input type="file" id="photo-file" accept="image/*">
     </div>
 
     <div id="dock">
-      <div id="icons-row" class="draggable-el" data-el="icons-row">
+      <div id="icons-row">
         <div class="app-icon icon-report" onclick="openPage('report')">
           <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
@@ -739,7 +719,7 @@ textarea.pg-input { resize:none; height:60px; }
         </div>
       </div>
 
-      <div id="loc-pill" class="draggable-el" data-el="loc-pill" onclick="openOv('loc-ov')">
+      <div id="loc-pill" onclick="openOv('loc-ov')">
         <svg width="12" height="14" fill="none" viewBox="0 0 12 14">
           <path d="M6 0C3.24 0 1 2.24 1 5c0 3.75 5 9 5 9s5-5.25 5-9C11 2.24 8.76 0 6 0z" fill="#4a8800" opacity=".8"/>
           <circle cx="6" cy="5" r="1.8" fill="#ffffff"/>
@@ -748,7 +728,7 @@ textarea.pg-input { resize:none; height:60px; }
         <div class="pulse-dot"></div>
       </div>
 
-      <div id="profile-tag" class="draggable-el" data-el="profile-tag" onclick="openOv('prof-ov')">
+      <div id="profile-tag" onclick="openOv('prof-ov')">
         <div id="prof-av"><span id="av-init">—</span></div>
         <div id="prof-label">
           <div id="prof-name">Nama Pengguna</div>
@@ -2098,251 +2078,6 @@ if(S.activeLoc){
   if(loc)document.getElementById('loc-pill-text').textContent=loc.name;
 }
 
-// ══════════════════════════════════════════
-// EDIT MODE — DRAG & RESIZE
-// ══════════════════════════════════════════
-let editMode = false;
-let layoutConfig = JSON.parse(localStorage.getItem('layout_v1') || '{}');
-
-function toggleEditMode() {
-  editMode = !editMode;
-  const btn = document.getElementById('edit-mode-btn');
-  const launcher = document.getElementById('launcher');
-
-  if (editMode) {
-    btn.style.background = '#aaee00';
-    document.getElementById('edit-icon-pen').setAttribute('stroke', '#2a4a00');
-    launcher.classList.add('edit-active');
-    activateDraggables();
-    showEditHint();
-  } else {
-    btn.style.background = '#1a1a1a';
-    document.getElementById('edit-icon-pen').setAttribute('stroke', 'white');
-    launcher.classList.remove('edit-active');
-    deactivateDraggables();
-    saveLayout();
-    hideEditHint();
-  }
-}
-
-function showEditHint() {
-  let hint = document.getElementById('edit-hint');
-  if (!hint) {
-    hint = document.createElement('div');
-    hint.id = 'edit-hint';
-    hint.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:white;font-size:10px;padding:6px 14px;border-radius:20px;z-index:9997;letter-spacing:.5px;pointer-events:none;white-space:nowrap';
-    hint.textContent = 'Drag elemen • Resize foto dari sudut';
-    document.body.appendChild(hint);
-  }
-  hint.style.display = 'block';
-}
-
-function hideEditHint() {
-  const hint = document.getElementById('edit-hint');
-  if (hint) hint.style.display = 'none';
-}
-
-function saveLayout() {
-  localStorage.setItem('layout_v1', JSON.stringify(layoutConfig));
-}
-
-// Default layout sesuai screenshot
-const DEFAULT_LAYOUT = {
-  'date-block':   { x: 0,  y: 0 },
-  'photo-ring':   { x: 0,  y: 0, w: 318, h: 248 },
-  'icons-row':    { x: 0,  y: 0 },
-  'profile-tag':  { x: 0,  y: 0 },
-  'loc-pill':     { x: 0,  y: 0 }
-};
-
-function applyLayout() {
-  // Kalau belum ada layout tersimpan, pakai default
-  if (!Object.keys(layoutConfig).length) {
-    layoutConfig = { ...DEFAULT_LAYOUT };
-  }
-  Object.keys(layoutConfig).forEach(elId => {
-    const el = document.getElementById(elId);
-    if (!el) return;
-    const cfg = layoutConfig[elId];
-    if (cfg.x !== undefined) { el.style.transform = `translate(${cfg.x}px, ${cfg.y}px)`; }
-    if (cfg.w !== undefined) {
-      el.style.width  = cfg.w + 'px';
-      el.style.height = cfg.h + 'px';
-    }
-  });
-}
-
-function activateDraggables() {
-  document.querySelectorAll('.draggable-el').forEach(el => {
-    el.classList.add('is-draggable');
-    makeDraggable(el);
-  });
-  // Show photo resize handle
-  const resizeHandle = document.getElementById('photo-resize');
-  if (resizeHandle) {
-    resizeHandle.style.display = 'flex';
-    makeResizable();
-  }
-}
-
-function deactivateDraggables() {
-  document.querySelectorAll('.draggable-el').forEach(el => {
-    el.classList.remove('is-draggable', 'is-dragging');
-  });
-  const resizeHandle = document.getElementById('photo-resize');
-  if (resizeHandle) resizeHandle.style.display = 'none';
-}
-
-function makeDraggable(el) {
-  // Remove old listeners by cloning
-  const clone = el.cloneNode(true);
-  el.parentNode.replaceChild(clone, el);
-  const fresh = document.getElementById(clone.id);
-  if (!fresh) return;
-
-  // Re-apply saved transform
-  const cfg = layoutConfig[fresh.id];
-  if (cfg && cfg.x !== undefined) {
-    fresh.style.transform = `translate(${cfg.x}px, ${cfg.y}px)`;
-  }
-
-  let startX, startY, startTX, startTY;
-  let isDragging = false;
-  let longPressTimer;
-
-  const getTranslate = () => {
-    const t = fresh.style.transform.match(/translate\((-?\d+\.?\d*)px,\s*(-?\d+\.?\d*)px\)/);
-    return t ? [parseFloat(t[1]), parseFloat(t[2])] : [0, 0];
-  };
-
-  // Touch
-  fresh.addEventListener('touchstart', e => {
-    if (!editMode) return;
-    const touch = e.touches[0];
-    startX = touch.clientX; startY = touch.clientY;
-    [startTX, startTY] = getTranslate();
-    longPressTimer = setTimeout(() => {
-      isDragging = true;
-      fresh.classList.add('is-dragging');
-    }, 150);
-  }, { passive: true });
-
-  fresh.addEventListener('touchmove', e => {
-    if (!editMode || !isDragging) return;
-    e.preventDefault();
-    const touch = e.touches[0];
-    const dx = touch.clientX - startX;
-    const dy = touch.clientY - startY;
-    fresh.style.transform = `translate(${startTX + dx}px, ${startTY + dy}px)`;
-  }, { passive: false });
-
-  fresh.addEventListener('touchend', e => {
-    clearTimeout(longPressTimer);
-    if (isDragging) {
-      const [tx, ty] = getTranslate();
-      if (!layoutConfig[fresh.id]) layoutConfig[fresh.id] = {};
-      layoutConfig[fresh.id].x = tx;
-      layoutConfig[fresh.id].y = ty;
-      fresh.classList.remove('is-dragging');
-    }
-    isDragging = false;
-  });
-
-  // Mouse (desktop)
-  fresh.addEventListener('mousedown', e => {
-    if (!editMode) return;
-    e.preventDefault();
-    startX = e.clientX; startY = e.clientY;
-    [startTX, startTY] = getTranslate();
-    isDragging = true;
-    fresh.classList.add('is-dragging');
-
-    const onMove = e => {
-      if (!isDragging) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      fresh.style.transform = `translate(${startTX + dx}px, ${startTY + dy}px)`;
-    };
-    const onUp = () => {
-      isDragging = false;
-      const [tx, ty] = getTranslate();
-      if (!layoutConfig[fresh.id]) layoutConfig[fresh.id] = {};
-      layoutConfig[fresh.id].x = tx;
-      layoutConfig[fresh.id].y = ty;
-      fresh.classList.remove('is-dragging');
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('mouseup', onUp);
-    };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
-  });
-
-  // Re-attach onclick for non-drag elements
-  if (fresh.id === 'loc-pill') fresh.onclick = () => { if (!editMode) openOv('loc-ov'); };
-  if (fresh.id === 'profile-tag') fresh.onclick = () => { if (!editMode) openOv('prof-ov'); };
-  if (fresh.id === 'icons-row') {
-    fresh.querySelectorAll('.app-icon').forEach(icon => {
-      icon.onclick = (e) => { if (editMode) e.stopPropagation(); };
-    });
-  }
-}
-
-function makeResizable() {
-  const ring = document.getElementById('photo-ring');
-  const handle = document.getElementById('photo-resize');
-  if (!ring || !handle) return;
-
-  // Apply saved size
-  if (layoutConfig['photo-ring'] && layoutConfig['photo-ring'].w) {
-    ring.style.width  = layoutConfig['photo-ring'].w + 'px';
-    ring.style.height = layoutConfig['photo-ring'].h + 'px';
-  }
-
-  let startX, startY, startW, startH;
-
-  const onStart = (cx, cy) => {
-    startX = cx; startY = cy;
-    startW = ring.offsetWidth;
-    startH = ring.offsetHeight;
-  };
-  const onMove = (cx, cy) => {
-    const w = Math.max(120, startW + (cx - startX));
-    const h = Math.max(80,  startH + (cy - startY));
-    ring.style.width  = w + 'px';
-    ring.style.height = h + 'px';
-  };
-  const onEnd = () => {
-    if (!layoutConfig['photo-ring']) layoutConfig['photo-ring'] = {};
-    layoutConfig['photo-ring'].w = ring.offsetWidth;
-    layoutConfig['photo-ring'].h = ring.offsetHeight;
-  };
-
-  // Touch
-  handle.addEventListener('touchstart', e => {
-    e.stopPropagation();
-    onStart(e.touches[0].clientX, e.touches[0].clientY);
-  }, { passive: true });
-  handle.addEventListener('touchmove', e => {
-    e.preventDefault(); e.stopPropagation();
-    onMove(e.touches[0].clientX, e.touches[0].clientY);
-  }, { passive: false });
-  handle.addEventListener('touchend', e => { e.stopPropagation(); onEnd(); });
-
-  // Mouse
-  handle.addEventListener('mousedown', e => {
-    e.preventDefault(); e.stopPropagation();
-    onStart(e.clientX, e.clientY);
-    const mm = e2 => onMove(e2.clientX, e2.clientY);
-    const mu = () => { onEnd(); window.removeEventListener('mousemove', mm); window.removeEventListener('mouseup', mu); };
-    window.addEventListener('mousemove', mm);
-    window.addEventListener('mouseup', mu);
-  });
-}
-
-// Apply saved layout on load
-document.addEventListener('DOMContentLoaded', () => {
-  applyLayout();
-});
 
 </script>
 </body>
