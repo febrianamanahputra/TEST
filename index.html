@@ -1419,27 +1419,48 @@ function closePage(){
 let barisState = []; // [{id, teks, fotos:[{blob,url}]}]
 let barisCounter = 0;
 
+function saveBaris() {
+  // Simpan teks saja (foto tidak bisa disimpan di localStorage)
+  const toSave = barisState.map(b => ({ id: b.id, teks: b.teks }));
+  localStorage.setItem('baris_draft', JSON.stringify(toSave));
+}
+
+function loadBarisDraft() {
+  try {
+    const saved = localStorage.getItem('baris_draft');
+    if(!saved) return false;
+    const data = JSON.parse(saved);
+    if(!data || !data.length) return false;
+    barisState = data.map(b => ({ id: b.id, teks: b.teks || '', fotos: [] }));
+    // Set counter ke nilai tertinggi
+    barisCounter = Math.max(...barisState.map(b => parseInt(b.id.replace('b_',''))||0));
+    return true;
+  } catch(e) { return false; }
+}
+
 function initBaris() {
-  // TIDAK reset barisState jika sudah ada isi
-  if(barisState.length === 0) {
+  // Coba load dari localStorage dulu
+  const hasDraft = loadBarisDraft();
+  if(!hasDraft) {
     barisCounter = 0;
+    barisState = [];
     for(let i = 0; i < 5; i++) addBaris(true);
-  } else {
-    renderBarisList(); // render ulang saja, teks tetap
   }
+  renderBarisList();
 }
 
 function addBaris(silent = false) {
   barisCounter++;
   const id = 'b_' + barisCounter;
   barisState.push({ id, teks: '', fotos: [] });
-  if(!silent) renderBarisList();
+  if(!silent) { renderBarisList(); saveBaris(); }
 }
 
 function delBaris(id) {
   if(barisState.length <= 1) return;
   barisState = barisState.filter(b => b.id !== id);
   renderBarisList();
+  saveBaris();
 }
 
 function delFoto(barisId, fotoIdx) {
@@ -1464,7 +1485,7 @@ function renderBarisList() {
     ta.value = b.teks;
     ta.rows = 1;
     ta.dataset.barisId = b.id;
-    ta.addEventListener('input', function(){ b.teks = this.value; });
+    ta.addEventListener('input', function(){ b.teks = this.value; saveBaris(); });
     ta.addEventListener('keydown', function(e){
       if(e.key === 'Enter') {
         e.preventDefault();
@@ -2262,7 +2283,7 @@ function updateNoSeri(val) {
 
 function addDanaItem() {
   danaItemCounter++;
-  danaItems.push({ id:'di_'+danaItemCounter, uraian:'', vol:'', satuan:'pcs', hargaSatuan:'', totalHarga:'' });
+  danaItems.push({ id:'di_'+danaItemCounter, uraian:'', vol:'', satuan:'', hargaSatuan:'', totalHarga:'' });
   renderDanaItems();
 }
 
@@ -2296,11 +2317,21 @@ function renderDanaItems() {
     const numLabel = document.createElement('span');
     numLabel.textContent = (idx+1)+'.';
     numLabel.style.cssText = 'font-size:11px;color:rgba(0,0,0,.3);flex-shrink:0;width:16px';
+
+    // Deklarasikan inputRefs di sini agar bisa diakses oleh uraianInput keydown
+    const inputRefs = {};
+
     const uraianInput = document.createElement('input');
     uraianInput.placeholder = 'Uraian / nama barang...';
     uraianInput.value = item.uraian;
-    uraianInput.style.cssText = 'flex:1;border:none;outline:none;font-size:12px;font-family:\'DM Sans\',sans-serif;background:transparent;color:#1a1a1a';
+    uraianInput.style.cssText = 'flex:1;border:1px solid rgba(0,0,0,.12);border-radius:8px;outline:none;font-size:12px;font-family:\'DM Sans\',sans-serif;background:#fff;color:#1a1a1a;padding:7px 10px';
     uraianInput.addEventListener('input', ()=>{ item.uraian = uraianInput.value; });
+    uraianInput.addEventListener('keydown', e => {
+      if(e.key === 'Enter') {
+        e.preventDefault();
+        inputRefs.vol?.focus();
+      }
+    });
     const delBtn = document.createElement('button');
     delBtn.innerHTML = `<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="rgba(200,50,50,.5)" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>`;
     delBtn.style.cssText = 'background:none;border:none;cursor:pointer;padding:2px;flex-shrink:0';
@@ -2313,22 +2344,84 @@ function renderDanaItems() {
 
     const fields = [
       { label:'Vol', key:'vol', type:'number', ph:'0' },
-      { label:'Satuan', key:'satuan', type:'text', ph:'pcs' },
+      { label:'Satuan', key:'satuan', type:'text', ph:'pcs, kg, m...' },
       { label:'Harga Satuan', key:'hargaSatuan', type:'number', ph:'Rp 0' },
       { label:'Total Harga', key:'totalHarga', type:'number', ph:'Rp 0' },
     ];
+    // inputRefs sudah dideklarasikan di atas
     fields.forEach(f => {
-      const wrap = document.createElement('div');
-      const lbl = document.createElement('div');
-      lbl.textContent = f.label;
-      lbl.style.cssText = 'font-size:9px;color:rgba(0,0,0,.35);letter-spacing:.5px;margin-bottom:2px';
-      const inp = document.createElement('input');
-      inp.type = f.type; inp.placeholder = f.ph; inp.value = item[f.key];
-      inp.style.cssText = 'width:100%;border:none;border-bottom:1px solid rgba(0,0,0,.1);outline:none;font-size:11px;font-family:\'DM Sans\',sans-serif;background:transparent;color:#1a1a1a;padding:2px 0';
-      inp.addEventListener('input', ()=>{ item[f.key]=inp.value; calcDanaTotal(); });
-      wrap.appendChild(lbl); wrap.appendChild(inp);
-      detailRow.appendChild(wrap);
-    });
+        const wrap = document.createElement('div');
+        const lbl = document.createElement('div');
+        lbl.textContent = f.label;
+        lbl.style.cssText = 'font-size:9px;color:rgba(0,0,0,.35);letter-spacing:.5px;margin-bottom:3px';
+        const inp = document.createElement('input');
+        inp.type = f.type; inp.placeholder = f.ph;
+        inp.value = f.key === 'satuan' ? (item[f.key] === 'pcs' ? '' : item[f.key]) : item[f.key];
+        inp.style.cssText = 'width:100%;border:1px solid rgba(0,0,0,.12);border-radius:7px;outline:none;font-size:11px;font-family:\'DM Sans\',sans-serif;background:#fff;color:#1a1a1a;padding:6px 8px';
+        inputRefs[f.key] = inp;
+
+        inp.addEventListener('input', ()=>{
+          item[f.key] = inp.value;
+          const vol  = parseFloat(inputRefs.vol?.value) || 0;
+          const hSat = parseFloat(inputRefs.hargaSatuan?.value) || 0;
+          const tot  = parseFloat(inputRefs.totalHarga?.value) || 0;
+
+          if(f.key === 'hargaSatuan' || f.key === 'vol') {
+            if(vol > 0 && hSat > 0) {
+              const hasil = vol * hSat;
+              item.totalHarga = hasil;
+              inputRefs.totalHarga.value = hasil;
+            }
+          } else if(f.key === 'totalHarga') {
+            if(vol > 0 && tot > 0) {
+              const hasil = tot / vol;
+              item.hargaSatuan = Math.round(hasil);
+              inputRefs.hargaSatuan.value = Math.round(hasil);
+            }
+          }
+          calcDanaTotal();
+        });
+
+        // Prefiks x1000 saat blur untuk harga satuan dan total harga
+        if(f.key === 'hargaSatuan' || f.key === 'totalHarga') {
+          inp.addEventListener('blur', ()=>{
+            const val = parseFloat(inp.value);
+            if(!val) return;
+            // Kalau angkanya < 1000 dan tidak ada tanda ribuan → kalikan 1000
+            if(val < 1000 && !inp.value.includes('.')) {
+              const newVal = val * 1000;
+              inp.value = newVal;
+              item[f.key] = newVal;
+              // Recalculate
+              const vol  = parseFloat(inputRefs.vol?.value) || 0;
+              if(f.key === 'hargaSatuan' && vol > 0) {
+                const hasil = vol * newVal;
+                item.totalHarga = hasil;
+                inputRefs.totalHarga.value = hasil;
+              } else if(f.key === 'totalHarga' && vol > 0) {
+                const hasil = newVal / vol;
+                item.hargaSatuan = Math.round(hasil);
+                inputRefs.hargaSatuan.value = Math.round(hasil);
+              }
+              calcDanaTotal();
+            }
+          });
+        }
+
+        // Enter = pindah ke input berikutnya
+        inp.addEventListener('keydown', e => {
+          if(e.key === 'Enter') {
+            e.preventDefault();
+            const allInputs = Array.from(document.querySelectorAll('#d-items-list input'));
+            const idx = allInputs.indexOf(inp);
+            if(idx >= 0 && idx < allInputs.length - 1) allInputs[idx+1].focus();
+            else document.querySelector('#d-items-list')?.closest('.page-body')?.querySelector('button[onclick*="addDanaItem"]')?.click();
+          }
+        });
+
+        wrap.appendChild(lbl); wrap.appendChild(inp);
+        detailRow.appendChild(wrap);
+      });
 
     row.appendChild(uraianRow); row.appendChild(detailRow);
     el.appendChild(row);
@@ -2468,6 +2561,23 @@ function renderDana() {
     </div>
   `).join('');
 }
+
+// ── ENTER KEY NAVIGATION (semua page) ──
+document.addEventListener('keydown', function(e) {
+  if(e.key !== 'Enter') return;
+  const tag = e.target.tagName;
+  const cls = e.target.className || '';
+  if(tag === 'TEXTAREA') return;
+  if(!cls.includes('pg-input') && !cls.includes('f-input') && !cls.includes('m-underline') && !cls.includes('sh-input')) return;
+  e.preventDefault();
+  const page = document.querySelector('.page.active') || document.querySelector('#pages');
+  const allInputs = Array.from((page || document).querySelectorAll('input:not([type=hidden]):not([type=file]), select'))
+    .filter(el => el.offsetParent !== null);
+  const idx = allInputs.indexOf(e.target);
+  if(idx >= 0 && idx < allInputs.length - 1) {
+    allInputs[idx + 1].focus();
+  }
+});
 
 function tgl(){return new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});}
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
