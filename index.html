@@ -1066,29 +1066,23 @@ textarea.pg-input { resize:none; height:60px; }
       <div class="sheet">
         <div class="sheet-handle"></div>
         <div class="sheet-hd">
-          <div class="sheet-ttl">Pilih Sumber Foto</div>
+          <div class="sheet-ttl">Kirim Foto ke WA</div>
           <button class="sh-close" onclick="closeOv('foto-chooser-ov')">✕</button>
         </div>
         <div class="sheet-body" style="display:flex;flex-direction:column;gap:10px;padding-bottom:24px">
-          <button onclick="pilihanFoto('camera')" style="display:flex;align-items:center;gap:14px;background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.08);border-radius:12px;padding:14px 16px;cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif">
+          <div id="foto-chooser-caption" style="background:rgba(170,238,0,0.1);border-radius:8px;padding:8px 12px;font-size:11px;color:#2a4a00;margin-bottom:4px;word-break:break-word"></div>
+          <button onclick="pilihanFoto('gallery')" style="display:flex;align-items:center;gap:14px;background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.08);border-radius:12px;padding:14px 16px;cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;width:100%">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <div>
+              <div style="font-size:13px;font-weight:500;color:#1a1a1a">Pilih dari Galeri</div>
+              <div style="font-size:10px;color:rgba(0,0,0,.4);margin-top:1px">Bisa pilih banyak foto sekaligus</div>
+            </div>
+          </button>
+          <button onclick="pilihanFoto('camera')" style="display:flex;align-items:center;gap:14px;background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.08);border-radius:12px;padding:14px 16px;cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;width:100%">
             <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H4a2 2 0 00-2 2v11a2 2 0 002 2h16a2 2 0 002-2V5a2 2 0 00-2-2h-5"/><path d="M9 3l1.5-2h3L15 3"/><circle cx="12" cy="11" r="3.5"/></svg>
             <div>
               <div style="font-size:13px;font-weight:500;color:#1a1a1a">Kamera</div>
               <div style="font-size:10px;color:rgba(0,0,0,.4);margin-top:1px">Ambil foto langsung</div>
-            </div>
-          </button>
-          <button onclick="pilihanFoto('gallery')" style="display:flex;align-items:center;gap:14px;background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.08);border-radius:12px;padding:14px 16px;cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            <div>
-              <div style="font-size:13px;font-weight:500;color:#1a1a1a">Galeri / Album</div>
-              <div style="font-size:10px;color:rgba(0,0,0,.4);margin-top:1px">Pilih dari galeri foto • bisa pilih banyak</div>
-            </div>
-          </button>
-          <button onclick="pilihanFoto('files')" style="display:flex;align-items:center;gap:14px;background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.08);border-radius:12px;padding:14px 16px;cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-            <div>
-              <div style="font-size:13px;font-weight:500;color:#1a1a1a">File Manager</div>
-              <div style="font-size:10px;color:rgba(0,0,0,.4);margin-top:1px">Pilih dari penyimpanan • bisa pilih banyak</div>
             </div>
           </button>
         </div>
@@ -1680,6 +1674,11 @@ function renderBarisList() {
       e.stopPropagation();
       if(!b.teks.trim()) return showToast('Isi keterangan pekerjaan dulu!');
       _fotoTargetId = b.id;
+      // Tampilkan preview caption di overlay
+      const pek = 'Pek. ' + b.teks.trim();
+      const areaStr = b.area ? ` | ${getAreaLabel(b.area)}` : '';
+      const capEl = document.getElementById('foto-chooser-caption');
+      if(capEl) capEl.textContent = pek + areaStr;
       openOv('foto-chooser-ov');
     };
 
@@ -1724,24 +1723,45 @@ function pilihanFoto(source) {
     const areaStr = b?.area ? ` | ${getAreaLabel(b.area)}` : '';
     const caption = pek + areaStr;
 
-    try {
-      const shareFiles = files.map((f, i) =>
-        f instanceof File ? f : new File([f], `foto_${i+1}.jpg`, { type: 'image/jpeg' })
-      );
-      if(navigator.share && navigator.canShare) {
-        const shareData = { files: shareFiles, text: caption };
-        if(navigator.canShare(shareData)) {
-          await navigator.share(shareData);
-          return;
+    // Coba Web Share API dulu (Android native share sheet)
+    const supported = typeof navigator.share === 'function';
+    const shareFiles = files.map((f, i) =>
+      f instanceof File ? f : new File([f], `foto_${i+1}.jpg`, { type: 'image/jpeg' })
+    );
+
+    let shared = false;
+
+    if(supported) {
+      try {
+        // Cek apakah bisa share file
+        const canShareFile = navigator.canShare && navigator.canShare({ files: shareFiles });
+        if(canShareFile) {
+          await navigator.share({ files: shareFiles, text: caption });
+          shared = true;
+        } else {
+          // Coba share tanpa file, hanya teks
+          await navigator.share({ text: caption });
+          shared = true;
+        }
+      } catch(err) {
+        if(err.name !== 'AbortError') {
+          // Share gagal bukan karena user cancel → fallback
+          shared = false;
+        } else {
+          // User cancel — tidak apa-apa
+          shared = true;
         }
       }
-      // Fallback — buka WA dengan caption
+    }
+
+    // Fallback: buka WA langsung dengan caption
+    if(!shared) {
       const encoded = encodeURIComponent(caption);
       window.open(`https://wa.me/?text=${encoded}`, '_blank');
-    } catch(err) {
-      // User cancel
     }
   });
+
+  // Penting: harus dipanggil langsung dalam user interaction
   input.click();
 }
 
