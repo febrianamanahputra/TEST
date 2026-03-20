@@ -1110,19 +1110,29 @@ textarea.pg-input { resize:none; height:60px; }
 
       <div class="page-body" style="display:flex;flex-direction:column;gap:14px">
 
-        <!-- Header No Seri + Total -->
+        <!-- Header No Seri + Total + Sisa Dana -->
         <div style="background:#f5ffe0;border:1px solid rgba(120,200,0,0.2);border-radius:12px;padding:14px 16px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
             <div style="font-size:9px;color:rgba(0,0,0,.4);text-transform:uppercase;letter-spacing:1.5px">Dana Lapangan</div>
             <div style="font-size:9px;color:rgba(0,0,0,.4);text-transform:uppercase;letter-spacing:1.5px">Total Nota</div>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
             <div style="display:flex;align-items:center;gap:8px">
               <button onclick="danaNoSeri(-1)" style="width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.08);border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">‹</button>
               <input id="d-no-seri" type="number" min="1" value="1" oninput="updateNoSeri(this.value)" style="width:52px;text-align:center;font-size:18px;font-weight:700;font-family:'Space Mono',monospace;color:#2a4a00;border:none;background:transparent;outline:none">
               <button onclick="danaNoSeri(1)" style="width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.08);border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">›</button>
             </div>
             <div style="font-size:20px;font-weight:700;color:#2a4a00" id="d-total-nota">Rp 0</div>
+          </div>
+          <!-- Sisa Dana dari Spreadsheet -->
+          <div style="border-top:1px solid rgba(120,200,0,0.2);padding-top:10px;display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:6px">
+              <div style="font-size:10px;color:rgba(0,0,0,.5)">Sisa Dana</div>
+              <button onclick="fetchSisaDana()" style="background:none;border:none;cursor:pointer;padding:0;opacity:.5" title="Refresh">
+                <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="#2a4a00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+              </button>
+            </div>
+            <div style="font-size:14px;font-weight:600;color:#2a4a00;font-family:'Space Mono',monospace" id="d-sisa-dana">—</div>
           </div>
         </div>
 
@@ -2199,6 +2209,24 @@ let danaItemCounter = 0;
 let danaFotoBlob = null;
 let danaFotoUrl = null;
 
+async function fetchSisaDana() {
+  const el = document.getElementById('d-sisa-dana');
+  if(!el) return;
+  el.textContent = '...';
+  try {
+    const json = await scriptGet({ action: 'getSisaDana', sheet: getSheetName() + '_Dana' });
+    if(json.status === 'ok') {
+      const sisa = parseFloat(json.sisa) || 0;
+      el.textContent = 'Rp ' + Math.round(sisa).toLocaleString('id-ID');
+      el.style.color = sisa < 0 ? '#cc3300' : '#2a4a00';
+    } else {
+      el.textContent = '—';
+    }
+  } catch(e) {
+    el.textContent = '—';
+  }
+}
+
 function initDana() {
   const loc = S.locations.find(l=>l.id===S.activeLoc);
   document.getElementById('d-loc-lbl').textContent = loc ? loc.name : '—';
@@ -2215,6 +2243,7 @@ function initDana() {
   addDanaItem(); addDanaItem();
   renderDanaItems();
   renderDana();
+  fetchSisaDana();
 }
 
 function danaNoSeri(delta) {
