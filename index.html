@@ -826,7 +826,13 @@ textarea.pg-input { resize:none; height:60px; }
         <!-- BARIS INPUT -->
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
           <div class="sec-lbl" style="margin-bottom:0">Baris Laporan</div>
-          <button onclick="addBaris()" style="background:#aaee00;border:none;border-radius:7px;padding:4px 10px;font-size:10px;font-weight:500;color:#2a4a00;cursor:pointer">+ Baris</button>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button onclick="openAreaManager()" style="background:none;border:none;font-size:10px;color:rgba(0,0,0,.4);cursor:pointer;display:flex;align-items:center;gap:3px">
+              <svg width="10" height="11" fill="none" viewBox="0 0 12 14" stroke="#4a8800" stroke-width="1.2"><path d="M6 0C3.24 0 1 2.24 1 5c0 3.75 5 9 5 9s5-5.25 5-9C11 2.24 8.76 0 6 0z"/></svg>
+              Area
+            </button>
+            <button onclick="addBaris()" style="background:#aaee00;border:none;border-radius:7px;padding:4px 10px;font-size:10px;font-weight:500;color:#2a4a00;cursor:pointer">+ Baris</button>
+          </div>
         </div>
         <div id="r-baris-list"></div>
 
@@ -1021,7 +1027,42 @@ textarea.pg-input { resize:none; height:60px; }
         </div>
       </div>
     </div>
-    <div class="overlay" id="foto-chooser-ov" onclick="bgClose(event,'foto-chooser-ov')">
+    <!-- OVERLAY: AREA PICKER (per baris) -->
+    <div class="overlay" id="area-picker-ov" onclick="bgClose(event,'area-picker-ov')">
+      <div class="sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-hd">
+          <div class="sheet-ttl">Pilih Area</div>
+          <button class="sh-close" onclick="closeOv('area-picker-ov')">✕</button>
+        </div>
+        <div class="sheet-body" style="padding-bottom:24px">
+          <div id="area-picker-list"></div>
+          <button onclick="closeOv('area-picker-ov');openAreaManager()" style="width:100%;background:none;border:1px dashed rgba(0,0,0,.15);border-radius:10px;padding:10px;font-size:11px;color:rgba(0,0,0,.4);cursor:pointer;margin-top:8px;font-family:'DM Sans',sans-serif">
+            + Kelola Area
+          </button>
+        </div>
+      </div>
+    </div>
+        <!-- OVERLAY: AREA MANAGER -->
+    <div class="overlay" id="area-ov" onclick="bgClose(event,'area-ov')">
+      <div class="sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-hd">
+          <div class="sheet-ttl">Kelola Area</div>
+          <button class="sh-close" onclick="closeOv('area-ov')">✕</button>
+        </div>
+        <div class="sheet-body">
+          <div id="area-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
+          <div style="font-size:9px;color:rgba(0,0,0,.35);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px">Tambah Area Baru</div>
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <input class="f-input" id="area-nama" placeholder="Nama area (Lt1, Indoor...)" style="flex:2">
+            <input class="f-input" id="area-kat" placeholder="Kategori" style="flex:1">
+          </div>
+          <button onclick="tambahArea()" style="width:100%;background:#aaee00;border:none;border-radius:10px;padding:11px;font-size:12px;font-weight:500;color:#2a4a00;cursor:pointer;font-family:'DM Sans',sans-serif">+ Tambah Area</button>
+        </div>
+      </div>
+    </div>
+        <div class="overlay" id="foto-chooser-ov" onclick="bgClose(event,'foto-chooser-ov')">
       <div class="sheet">
         <div class="sheet-handle"></div>
         <div class="sheet-hd">
@@ -1372,7 +1413,13 @@ function openOv(id){document.getElementById(id).classList.add('active');if(id===
 function closeOv(id){document.getElementById(id).classList.remove('active');}
 function bgClose(e,id){if(e.target===document.getElementById(id))closeOv(id);}
 
-function getLD(id){if(!S.locData[id])S.locData[id]={reports:[],materials:[],dana:[]};return S.locData[id];}
+function getLD(id){
+  if(!S.locData[id]) S.locData[id]={reports:[],materials:[],dana:[],catatan:[],links:[],areas:[]};
+  if(!S.locData[id].catatan) S.locData[id].catatan=[];
+  if(!S.locData[id].links) S.locData[id].links=[];
+  if(!S.locData[id].areas) S.locData[id].areas=[];
+  return S.locData[id];
+}
 
 function renderLocs(){
   const list=document.getElementById('loc-list');
@@ -1480,26 +1527,25 @@ let barisState = []; // [{id, teks, fotos:[{blob,url}]}]
 let barisCounter = 0;
 
 function saveBaris() {
-  // Simpan teks saja (foto tidak bisa disimpan di localStorage)
+  const key = 'baris_draft_' + (S.activeLoc || 'global');
   const toSave = barisState.map(b => ({ id: b.id, teks: b.teks }));
-  localStorage.setItem('baris_draft', JSON.stringify(toSave));
+  localStorage.setItem(key, JSON.stringify(toSave));
 }
 
 function loadBarisDraft() {
   try {
-    const saved = localStorage.getItem('baris_draft');
+    const key = 'baris_draft_' + (S.activeLoc || 'global');
+    const saved = localStorage.getItem(key);
     if(!saved) return false;
     const data = JSON.parse(saved);
     if(!data || !data.length) return false;
     barisState = data.map(b => ({ id: b.id, teks: b.teks || '', fotos: [] }));
-    // Set counter ke nilai tertinggi
     barisCounter = Math.max(...barisState.map(b => parseInt(b.id.replace('b_',''))||0));
     return true;
   } catch(e) { return false; }
 }
 
 function initBaris() {
-  // Coba load dari localStorage dulu
   const hasDraft = loadBarisDraft();
   if(!hasDraft) {
     barisCounter = 0;
@@ -1512,7 +1558,7 @@ function initBaris() {
 function addBaris(silent = false) {
   barisCounter++;
   const id = 'b_' + barisCounter;
-  barisState.push({ id, teks: '', fotos: [] });
+  barisState.push({ id, teks: '', area: null, fotos: [] });
   if(!silent) { renderBarisList(); saveBaris(); }
 }
 
@@ -1528,6 +1574,45 @@ function delFoto(barisId, fotoIdx) {
   if(!b) return;
   b.fotos.splice(fotoIdx, 1);
   renderBarisList();
+}
+
+function getAreaLabel(area) {
+  if(!area) return '';
+  return area.nama + (area.kategori ? ' ' + area.kategori : '');
+}
+
+function openAreaPicker(barisId) {
+  _areaPickerBarisId = barisId;
+  const ld = S.activeLoc ? getLD(S.activeLoc) : null;
+  const areas = ld ? (ld.areas || []) : [];
+  const el = document.getElementById('area-picker-list');
+  const b = barisState.find(x => x.id === barisId);
+
+  if(!areas.length) {
+    el.innerHTML = '<div style="font-size:12px;color:rgba(0,0,0,.4);text-align:center;padding:16px 0">Belum ada area.<br>Tambah di Kelola Area dulu.</div>';
+  } else {
+    el.innerHTML = areas.map((a, i) => {
+      const isSelected = b && b.area && b.area.nama === a.nama;
+      return `<button onclick="setBarisArea('${barisId}',${i})" style="display:block;width:100%;text-align:left;padding:10px 14px;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;background:${isSelected?'#aaee00':'rgba(0,0,0,0.03)'};color:${isSelected?'#2a4a00':'#1a1a1a'};margin-bottom:6px;font-weight:${isSelected?'500':'400'}">
+        ${esc(a.nama)}${a.kategori?` <span style="opacity:.5;font-size:11px">${esc(a.kategori)}</span>`:''}
+      </button>`;
+    }).join('');
+  }
+  openOv('area-picker-ov');
+}
+
+let _areaPickerBarisId = null;
+
+function setBarisArea(barisId, areaIdx) {
+  const b = barisState.find(x => x.id === barisId);
+  if(!b) return;
+  const ld = S.activeLoc ? getLD(S.activeLoc) : null;
+  const area = ld ? ld.areas[areaIdx] : null;
+  // Toggle — tap area yg sama → hapus
+  b.area = (b.area && b.area.nama === area?.nama) ? null : area;
+  closeOv('area-picker-ov');
+  renderBarisList();
+  saveBaris();
 }
 
 function renderBarisList() {
@@ -1563,27 +1648,48 @@ function renderBarisList() {
       }
     });
 
-    // Foto thumbnails tidak lagi disimpan — foto langsung ke WA
     row.appendChild(ta);
+
+    // Area tag (jika sudah dipilih)
+    if(b.area) {
+      const areaTag = document.createElement('div');
+      areaTag.style.cssText = 'display:inline-flex;align-items:center;gap:4px;background:#aaee00;border-radius:12px;padding:2px 8px 2px 6px;margin:2px 0 4px;cursor:pointer;width:fit-content';
+      areaTag.onclick = () => openAreaPicker(b.id);
+      areaTag.innerHTML = `<svg width="9" height="10" fill="#2a4a00" viewBox="0 0 12 14"><path d="M6 0C3.24 0 1 2.24 1 5c0 3.75 5 9 5 9s5-5.25 5-9C11 2.24 8.76 0 6 0z"/></svg><span style="font-size:10px;font-weight:500;color:#2a4a00">${esc(getAreaLabel(b.area))}</span>`;
+      row.appendChild(areaTag);
+    }
 
     // Action buttons row
     const actions = document.createElement('div');
     actions.style.cssText = 'display:flex;align-items:center;gap:6px;margin-top:2px;';
 
-    // Camera button — pilih sumber foto
+    // Area button
+    const areaBtn = document.createElement('button');
+    areaBtn.title = 'Pilih area';
+    areaBtn.style.cssText = `background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;opacity:${b.area?'1':'.45'};`;
+    areaBtn.innerHTML = `<svg width="14" height="15" fill="${b.area?'#aaee00':'none'}" viewBox="0 0 12 14" stroke="${b.area?'#4a8800':'#1a1a1a'}" stroke-width="1.2"><path d="M6 0C3.24 0 1 2.24 1 5c0 3.75 5 9 5 9s5-5.25 5-9C11 2.24 8.76 0 6 0z"/><circle cx="6" cy="5" r="1.8" fill="${b.area?'#4a8800':'#1a1a1a'}" stroke="none"/></svg>`;
+    areaBtn.onclick = () => openAreaPicker(b.id);
+
+    // Camera button
     const camBtn = document.createElement('button');
     camBtn.className = 'baris-photo-btn';
-    camBtn.title = 'Lampirkan foto';
+    camBtn.title = 'Kirim foto ke WA';
     camBtn.style.cssText = 'background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;opacity:.7;';
     camBtn.innerHTML = `<svg width="18" height="16" fill="none" viewBox="0 0 24 20" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H4a2 2 0 00-2 2v11a2 2 0 002 2h16a2 2 0 002-2V5a2 2 0 00-2-2h-5"/><path d="M9 3l1.5-2h3L15 3"/><circle cx="12" cy="11" r="3.5"/></svg>`;
-    camBtn.onclick = (e) => { e.stopPropagation(); openFotoChooser(b.id); };
+    camBtn.onclick = (e) => {
+      e.stopPropagation();
+      if(!b.teks.trim()) return showToast('Isi keterangan pekerjaan dulu!');
+      _fotoTargetId = b.id;
+      openOv('foto-chooser-ov');
+    };
 
-    // Trash button — hapus baris
+    // Trash button
     const delBtn = document.createElement('button');
     delBtn.style.cssText = 'background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;opacity:.45;margin-left:auto;';
     delBtn.innerHTML = `<svg width="14" height="15" fill="none" viewBox="0 0 24 24" stroke="#cc3300" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>`;
     delBtn.onclick = () => delBaris(b.id);
 
+    actions.appendChild(areaBtn);
     actions.appendChild(camBtn);
     actions.appendChild(delBtn);
     row.appendChild(actions);
@@ -1614,28 +1720,26 @@ function pilihanFoto(source) {
     if(!files.length) return;
 
     const b = barisState.find(x => x.id === _fotoTargetId);
-    const caption = b ? 'Pek. ' + b.teks.trim() : '';
+    const pek = b ? 'Pek. ' + b.teks.trim() : '';
+    const areaStr = b?.area ? ` | ${getAreaLabel(b.area)}` : '';
+    const caption = pek + areaStr;
 
     try {
-      // Web Share API — langsung arahkan ke WA dengan foto + caption
+      const shareFiles = files.map((f, i) =>
+        f instanceof File ? f : new File([f], `foto_${i+1}.jpg`, { type: 'image/jpeg' })
+      );
       if(navigator.share && navigator.canShare) {
-        const shareFiles = files.map((f, i) =>
-          f instanceof File ? f : new File([f], `foto_${i+1}.jpg`, { type: 'image/jpeg' })
-        );
         const shareData = { files: shareFiles, text: caption };
         if(navigator.canShare(shareData)) {
           await navigator.share(shareData);
           return;
         }
       }
-      // Fallback jika Web Share tidak support file
-      // Buka WA dengan caption saja, user lampirkan foto manual
+      // Fallback — buka WA dengan caption
       const encoded = encodeURIComponent(caption);
-      const locData = S.activeLoc ? getLD(S.activeLoc) : {};
-      const num = (locData.waNumber || '').replace(/\D/g,'');
-      window.open(num ? `https://wa.me/${num}?text=${encoded}` : `https://wa.me/?text=${encoded}`, '_blank');
+      window.open(`https://wa.me/?text=${encoded}`, '_blank');
     } catch(err) {
-      // User cancel — tidak apa-apa
+      // User cancel
     }
   });
   input.click();
@@ -1664,7 +1768,10 @@ function buildWAText() {
   const preview = document.getElementById('r-header-preview').textContent;
   const barisTerisi = barisState.filter(b => b.teks.trim());
   if(!barisTerisi.length) return null;
-  const lines = barisTerisi.map(b => `- Pek. ${b.teks.trim()}`).join('\n');
+  const lines = barisTerisi.map(b => {
+    const areaStr = b.area ? ` | ${getAreaLabel(b.area)}` : '';
+    return `- Pek. ${b.teks.trim()}${areaStr}`;
+  }).join('\n');
   return preview + '\n\n' + lines;
 }
 
@@ -2675,7 +2782,79 @@ function renderDana() {
   `).join('');
 }
 
-// ── ENTER KEY NAVIGATION (semua page) ──
+// ── AREA MANAGEMENT ──
+let selectedArea = null; // {nama, kategori}
+
+function openAreaManager() {
+  renderAreaList();
+  openOv('area-ov');
+}
+
+function renderAreaList() {
+  const el = document.getElementById('area-list');
+  const ld = S.activeLoc ? getLD(S.activeLoc) : null;
+  const areas = ld ? (ld.areas || []) : [];
+  if(!areas.length) {
+    el.innerHTML = '<div style="font-size:11px;color:rgba(0,0,0,.3);font-style:italic">Belum ada area</div>';
+    return;
+  }
+  el.innerHTML = areas.map((a, i) => `
+    <div style="display:flex;align-items:center;gap:4px;background:rgba(0,0,0,0.04);border-radius:20px;padding:4px 10px 4px 6px">
+      <span style="font-size:11px;color:#1a1a1a">${esc(a.nama)}</span>
+      ${a.kategori ? `<span style="font-size:9px;color:rgba(0,0,0,.4)">(${esc(a.kategori)})</span>` : ''}
+      <button onclick="hapusArea(${i})" style="background:none;border:none;font-size:11px;color:rgba(200,50,50,.5);cursor:pointer;padding:0 0 0 2px;line-height:1">✕</button>
+    </div>
+  `).join('');
+}
+
+function tambahArea() {
+  if(!S.activeLoc) return showToast('Pilih lokasi dulu!');
+  const nama = document.getElementById('area-nama').value.trim();
+  const kat  = document.getElementById('area-kat').value.trim();
+  if(!nama) return showToast('Isi nama area!');
+  const ld = getLD(S.activeLoc);
+  ld.areas.push({ nama, kategori: kat });
+  save();
+  document.getElementById('area-nama').value = '';
+  document.getElementById('area-kat').value = '';
+  renderAreaList();
+  renderAreaTags();
+}
+
+function hapusArea(idx) {
+  if(!S.activeLoc) return;
+  const ld = getLD(S.activeLoc);
+  ld.areas.splice(idx, 1);
+  if(selectedArea && selectedArea === ld.areas[idx]) selectedArea = null;
+  save();
+  renderAreaList();
+  renderAreaTags();
+}
+
+function renderAreaTags() {
+  const el = document.getElementById('r-area-tags');
+  if(!el) return;
+  const ld = S.activeLoc ? getLD(S.activeLoc) : null;
+  const areas = ld ? (ld.areas || []) : [];
+  if(!areas.length) {
+    el.innerHTML = '<div style="font-size:11px;color:rgba(0,0,0,.25);font-style:italic">Belum ada area — tap Kelola Area</div>';
+    return;
+  }
+  el.innerHTML = areas.map((a, i) => {
+    const isSelected = selectedArea && selectedArea.nama === a.nama;
+    return `<button onclick="selectArea(${i})" style="font-size:11px;padding:5px 12px;border-radius:20px;border:1.5px solid ${isSelected?'#aaee00':'rgba(0,0,0,0.12)'};background:${isSelected?'#aaee00':'#fff'};color:${isSelected?'#2a4a00':'rgba(0,0,0,0.6)'};cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:${isSelected?'500':'400'}">${esc(a.nama)}${a.kategori?` <span style="opacity:.6;font-size:10px">${esc(a.kategori)}</span>`:''}</button>`;
+  }).join('');
+}
+
+function selectArea(idx) {
+  const ld = S.activeLoc ? getLD(S.activeLoc) : null;
+  if(!ld) return;
+  const area = ld.areas[idx];
+  selectedArea = (selectedArea && selectedArea.nama === area.nama) ? null : area;
+  renderAreaTags();
+}
+
+
 document.addEventListener('keydown', function(e) {
   if(e.key !== 'Enter') return;
   const tag = e.target.tagName;
@@ -2724,18 +2903,21 @@ history.pushState({ page: 'inner' }, '');
 
 // ── CATATAN ──
 function saveCatatan(){
+  if(!S.activeLoc) return showToast('Pilih lokasi dulu!');
   const txt=document.getElementById('c-input').value.trim();
   if(!txt)return;
-  if(!S.catatan)S.catatan=[];
-  S.catatan.unshift({id:Date.now(),teks:txt,tgl:tgl()});
+  const ld=getLD(S.activeLoc);
+  ld.catatan.unshift({id:Date.now(),teks:txt,tgl:tgl()});
   save();
   document.getElementById('c-input').value='';
   renderCatatan();
 }
 function renderCatatan(){
   const el=document.getElementById('c-list');
-  if(!S.catatan||!S.catatan.length){el.innerHTML='<div class="no-data">Belum ada catatan.</div>';return;}
-  el.innerHTML=S.catatan.map(c=>`
+  if(!S.activeLoc){el.innerHTML='<div class="no-data">Pilih lokasi dulu.</div>';return;}
+  const ld=getLD(S.activeLoc);
+  if(!ld.catatan||!ld.catatan.length){el.innerHTML='<div class="no-data">Belum ada catatan.</div>';return;}
+  el.innerHTML=ld.catatan.map(c=>`
     <div class="entry" style="position:relative">
       <div class="entry-title" style="padding-right:28px;white-space:pre-wrap;word-break:break-word">${esc(c.teks)}</div>
       <div class="entry-meta">${c.tgl}</div>
@@ -2744,7 +2926,9 @@ function renderCatatan(){
   `).join('');
 }
 function delCatatan(id){
-  S.catatan=S.catatan.filter(c=>c.id!==id);
+  if(!S.activeLoc)return;
+  const ld=getLD(S.activeLoc);
+  ld.catatan=ld.catatan.filter(c=>c.id!==id);
   save();renderCatatan();
 }
 document.getElementById('c-input').addEventListener('keydown',function(e){
@@ -2753,12 +2937,13 @@ document.getElementById('c-input').addEventListener('keydown',function(e){
 
 // ── LINK CEPAT ──
 function saveLink(){
+  if(!S.activeLoc) return showToast('Pilih lokasi dulu!');
   const label=document.getElementById('l-label').value.trim();
   let url=document.getElementById('l-url').value.trim();
   if(!label||!url)return alert('Isi nama dan URL!');
   if(!/^https?:\/\//i.test(url))url='https://'+url;
-  if(!S.links)S.links=[];
-  S.links.unshift({id:Date.now(),label,url,tgl:tgl()});
+  const ld=getLD(S.activeLoc);
+  ld.links.unshift({id:Date.now(),label,url,tgl:tgl()});
   save();
   document.getElementById('l-label').value='';
   document.getElementById('l-url').value='';
@@ -2766,8 +2951,10 @@ function saveLink(){
 }
 function renderLinks(){
   const el=document.getElementById('l-list');
-  if(!S.links||!S.links.length){el.innerHTML='<div class="no-data">Belum ada link.</div>';return;}
-  el.innerHTML=S.links.map(l=>`
+  if(!S.activeLoc){el.innerHTML='<div class="no-data">Pilih lokasi dulu.</div>';return;}
+  const ld=getLD(S.activeLoc);
+  if(!ld.links||!ld.links.length){el.innerHTML='<div class="no-data">Belum ada link.</div>';return;}
+  el.innerHTML=ld.links.map(l=>`
     <div class="entry" style="display:flex;align-items:center;gap:10px">
       <div style="flex:1;min-width:0">
         <a href="${esc(l.url)}" target="_blank" rel="noopener" style="font-size:12px;font-weight:500;color:#1a1a1a;text-decoration:none;display:block;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(l.label)}</a>
@@ -2783,7 +2970,9 @@ function renderLinks(){
   `).join('');
 }
 function delLink(id){
-  S.links=S.links.filter(l=>l.id!==id);
+  if(!S.activeLoc)return;
+  const ld=getLD(S.activeLoc);
+  ld.links=ld.links.filter(l=>l.id!==id);
   save();renderLinks();
 }
 
