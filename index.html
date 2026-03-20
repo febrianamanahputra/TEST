@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="/manifest.json">
 <title>Dashboard Proyek</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
@@ -1053,6 +1053,51 @@ textarea.pg-input { resize:none; height:60px; }
         </div>
       </div>
     </div>
+    <!-- OVERLAY: DANA ITEM FORM -->
+    <div class="overlay" id="dana-item-ov" onclick="bgClose(event,'dana-item-ov')">
+      <div class="sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-hd">
+          <div class="sheet-ttl" id="dana-item-ov-title">Tambah Item</div>
+          <button class="sh-close" onclick="closeOv('dana-item-ov')">✕</button>
+        </div>
+        <div class="sheet-body" style="display:flex;flex-direction:column;gap:12px;padding-bottom:28px">
+          <input type="hidden" id="di-edit-idx">
+          <div class="f-group">
+            <div class="f-label">Uraian / Nama Barang</div>
+            <input class="f-input" id="di-uraian" placeholder="Nama barang..." onkeydown="diEnter(event,'di-vol')">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="f-group">
+              <div class="f-label">Vol</div>
+              <input class="f-input" id="di-vol" type="number" placeholder="0" oninput="autoCalcDanaItem('vol')" onkeydown="diEnter(event,'di-satuan')">
+            </div>
+            <div class="f-group">
+              <div class="f-label">Satuan</div>
+              <input class="f-input" id="di-satuan" placeholder="pcs, kg, m..." onkeydown="diEnter(event,'di-harga')">
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="f-group">
+              <div class="f-label">Harga Satuan</div>
+              <input class="f-input" id="di-harga" type="number" placeholder="Rp 0" oninput="autoCalcDanaItem('harga')" onblur="autoX1000DanaItem('di-harga')" onkeydown="diEnter(event,'di-total')">
+            </div>
+            <div class="f-group">
+              <div class="f-label">Total Harga</div>
+              <input class="f-input" id="di-total" type="number" placeholder="Rp 0" oninput="autoCalcDanaItem('total')" onblur="autoX1000DanaItem('di-total')" onkeydown="diEnter(event,null)">
+            </div>
+          </div>
+          <!-- Preview total -->
+          <div style="background:rgba(170,238,0,0.1);border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:11px;color:rgba(0,0,0,.5)">Total item ini</span>
+            <span style="font-size:15px;font-weight:600;color:#2a4a00;font-family:'Space Mono',monospace" id="di-preview-total">Rp 0</span>
+          </div>
+          <button onclick="simpanDanaItem()" style="width:100%;background:#aaee00;border:none;border-radius:10px;padding:13px;font-size:13px;font-weight:500;color:#2a4a00;cursor:pointer;font-family:'DM Sans',sans-serif">Simpan Item</button>
+          <button id="di-hapus-btn" onclick="hapusDanaItem()" style="width:100%;background:none;border:1px solid rgba(200,50,50,.3);border-radius:10px;padding:11px;font-size:12px;color:#cc3300;cursor:pointer;display:none;font-family:'DM Sans',sans-serif">Hapus Item Ini</button>
+        </div>
+      </div>
+    </div>
+
     <!-- OVERLAY: DANA FOTO -->
     <div class="overlay" id="dana-foto-ov" onclick="bgClose(event,'dana-foto-ov')">
       <div class="sheet">
@@ -1142,11 +1187,11 @@ textarea.pg-input { resize:none; height:60px; }
         </div>
 
         <!-- Form Nota -->
-        <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:12px;overflow:hidden">
+        <div style="background:#fff;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;overflow:hidden;font-family:'DM Sans',sans-serif;min-height:200px;display:flex;flex-direction:column">
 
-          <!-- Tanggal + Klasifikasi -->
-          <div style="display:flex;gap:0;border-bottom:1px solid rgba(0,0,0,0.06)">
-            <div style="flex:1;padding:10px 14px;border-right:1px solid rgba(0,0,0,0.06)">
+          <!-- Header nota: Tanggal + Klasifikasi -->
+          <div style="display:flex;border-bottom:1px solid rgba(0,0,0,0.07)">
+            <div style="flex:1;padding:10px 14px;border-right:1px solid rgba(0,0,0,0.07)">
               <div style="font-size:9px;color:rgba(0,0,0,.35);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">Tanggal</div>
               <input type="date" id="d-tanggal" style="border:none;outline:none;font-size:12px;font-family:'DM Sans',sans-serif;width:100%;background:transparent;color:#1a1a1a">
             </div>
@@ -1160,12 +1205,21 @@ textarea.pg-input { resize:none; height:60px; }
             </div>
           </div>
 
-          <!-- Items list -->
+          <!-- Kolom header tabel -->
+          <div style="display:grid;grid-template-columns:1fr 52px 80px 90px;gap:0;background:rgba(0,0,0,0.02);border-bottom:1px solid rgba(0,0,0,0.07);padding:6px 14px">
+            <div style="font-size:9px;color:rgba(0,0,0,.4);letter-spacing:.8px;text-transform:uppercase">Uraian</div>
+            <div style="font-size:9px;color:rgba(0,0,0,.4);letter-spacing:.8px;text-transform:uppercase;text-align:center">Vol</div>
+            <div style="font-size:9px;color:rgba(0,0,0,.4);letter-spacing:.8px;text-transform:uppercase;text-align:right">Harga Sat.</div>
+            <div style="font-size:9px;color:rgba(0,0,0,.4);letter-spacing:.8px;text-transform:uppercase;text-align:right">Total</div>
+          </div>
+
+          <!-- Daftar item nota -->
           <div id="d-items-list"></div>
 
-          <!-- Tombol tambah item -->
-          <button onclick="addDanaItem()" style="width:100%;background:none;border:none;border-top:1px dashed rgba(0,0,0,0.1);padding:10px;font-size:11px;color:rgba(0,0,0,0.4);cursor:pointer;font-family:'DM Sans',sans-serif">
-            + Tambah Item
+          <!-- Tombol + tambah item -->
+          <button onclick="openDanaItemForm(null)" style="width:100%;background:none;border:none;border-top:1.5px dashed rgba(170,238,0,0.5);padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:auto">
+            <div style="width:26px;height:26px;border-radius:50%;background:#aaee00;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#2a4a00;line-height:1">+</div>
+            <span style="font-size:12px;font-weight:500;color:#4a8800">Tambah Item</span>
           </button>
         </div>
 
@@ -1314,7 +1368,7 @@ function loadPhoto() {
   setPhoto(null);
 }
 
-function openOv(id){document.getElementById(id).classList.add('active');if(id==='loc-ov')renderLocs();if(id==='prof-ov')loadProf();}
+function openOv(id){document.getElementById(id).classList.add('active');if(id==='loc-ov')renderLocs();if(id==='prof-ov')loadProf();history.pushState({page:'inner'},'')}
 function closeOv(id){document.getElementById(id).classList.remove('active');}
 function bgClose(e,id){if(e.target===document.getElementById(id))closeOv(id);}
 
@@ -1400,6 +1454,7 @@ function openPage(id){
   document.getElementById('pages').classList.add('active');
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
+  history.pushState({page:'inner'},'');
   const loc=S.locations.find(l=>l.id===S.activeLoc);
   const ln=loc?loc.name:'—';
   if(id==='report'){
@@ -2256,182 +2311,235 @@ async function fetchSisaDana() {
 function initDana() {
   const loc = S.locations.find(l=>l.id===S.activeLoc);
   document.getElementById('d-loc-lbl').textContent = loc ? loc.name : '—';
-  // Set tanggal hari ini
-  document.getElementById('d-tanggal').value = new Date().toISOString().split('T')[0];
-  // No seri dari localStorage
   const ld = S.activeLoc ? getLD(S.activeLoc) : null;
+  // Load no seri terakhir
   const noSeri = (ld && ld.danaNoSeri) || 1;
   document.getElementById('d-no-seri').value = noSeri;
-  // Reset form
-  danaItems = []; danaItemCounter = 0; danaFotoBlob = null; danaFotoUrl = null;
-  document.getElementById('d-foto-preview').style.display = 'none';
-  document.getElementById('d-foto-btn').style.display = 'flex';
-  addDanaItem(); addDanaItem();
-  renderDanaItems();
+  // Load draft nota untuk nomor seri ini
+  loadDanaDraft(noSeri);
   renderDana();
   fetchSisaDana();
 }
 
+function loadDanaDraft(noSeri) {
+  const ld = S.activeLoc ? getLD(S.activeLoc) : null;
+  if(!ld) { danaItems = []; danaItemCounter = 0; renderDanaItems(); return; }
+  if(!ld.danaDrafts) ld.danaDrafts = {};
+  const draft = ld.danaDrafts[noSeri];
+  if(draft) {
+    // Load draft yang tersimpan
+    danaItems = draft.items ? [...draft.items] : [];
+    danaItemCounter = danaItems.length;
+    danaFotoBlob = null; danaFotoUrl = draft.fotoUrl || null;
+    document.getElementById('d-tanggal').value = draft.tanggal || new Date().toISOString().split('T')[0];
+    document.getElementById('d-klasifikasi').value = draft.klasifikasi || 'Bahan';
+    // Restore foto preview jika ada
+    if(danaFotoUrl) {
+      document.getElementById('d-foto-img').src = danaFotoUrl;
+      document.getElementById('d-foto-preview').style.display = 'block';
+      document.getElementById('d-foto-btn').style.display = 'none';
+    } else {
+      document.getElementById('d-foto-preview').style.display = 'none';
+      document.getElementById('d-foto-btn').style.display = 'flex';
+    }
+  } else {
+    // Draft baru
+    danaItems = []; danaItemCounter = 0; danaFotoBlob = null; danaFotoUrl = null;
+    document.getElementById('d-tanggal').value = new Date().toISOString().split('T')[0];
+    document.getElementById('d-foto-preview').style.display = 'none';
+    document.getElementById('d-foto-btn').style.display = 'flex';
+  }
+  renderDanaItems();
+}
+
+function saveDanaDraft() {
+  const ld = S.activeLoc ? getLD(S.activeLoc) : null;
+  if(!ld) return;
+  if(!ld.danaDrafts) ld.danaDrafts = {};
+  const noSeri = parseInt(document.getElementById('d-no-seri').value) || 1;
+  ld.danaDrafts[noSeri] = {
+    items: [...danaItems],
+    tanggal: document.getElementById('d-tanggal').value,
+    klasifikasi: document.getElementById('d-klasifikasi').value,
+    fotoUrl: danaFotoUrl || null
+  };
+  save();
+}
+
 function danaNoSeri(delta) {
+  // Simpan draft nomor seri sekarang dulu
+  saveDanaDraft();
   const el = document.getElementById('d-no-seri');
   const val = Math.max(1, (parseInt(el.value)||1) + delta);
   el.value = val;
-  updateNoSeri(val);
+  const ld = S.activeLoc ? getLD(S.activeLoc) : null;
+  if(ld) { ld.danaNoSeri = val; save(); }
+  // Load draft nomor seri baru
+  loadDanaDraft(val);
 }
 
 function updateNoSeri(val) {
+  // Simpan draft nomor seri sekarang
+  saveDanaDraft();
   if(!S.activeLoc) return;
   const ld = getLD(S.activeLoc);
   ld.danaNoSeri = parseInt(val)||1;
   save();
-}
-
-function addDanaItem() {
-  danaItemCounter++;
-  danaItems.push({ id:'di_'+danaItemCounter, uraian:'', vol:'', satuan:'', hargaSatuan:'', totalHarga:'' });
-  renderDanaItems();
-}
-
-function delDanaItem(id) {
-  if(danaItems.length <= 1) return;
-  danaItems = danaItems.filter(x=>x.id!==id);
-  renderDanaItems();
-  calcDanaTotal();
-}
-
-function calcDanaTotal() {
-  let total = 0;
-  danaItems.forEach(item => {
-    if(item.totalHarga) total += parseFloat(item.totalHarga)||0;
-    else total += (parseFloat(item.vol)||0) * (parseFloat(item.hargaSatuan)||0);
-  });
-  document.getElementById('d-total-nota').textContent = 'Rp ' + Math.round(total).toLocaleString('id-ID');
-  return total;
+  // Load draft untuk nomor baru
+  loadDanaDraft(parseInt(val)||1);
 }
 
 function renderDanaItems() {
   const el = document.getElementById('d-items-list');
   el.innerHTML = '';
+  if(!danaItems.length) { calcDanaTotal(); return; }
   danaItems.forEach((item, idx) => {
+    const tot = item.totalHarga ? parseFloat(item.totalHarga) :
+                (parseFloat(item.vol)||0) * (parseFloat(item.hargaSatuan)||0);
+    const hSat = item.hargaSatuan ? 'Rp '+Math.round(parseFloat(item.hargaSatuan)).toLocaleString('id-ID') : '—';
     const row = document.createElement('div');
-    row.style.cssText = 'border-bottom:1px solid rgba(0,0,0,0.06);padding:10px 14px';
-
-    // Uraian
-    const uraianRow = document.createElement('div');
-    uraianRow.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:8px';
-    const numLabel = document.createElement('span');
-    numLabel.textContent = (idx+1)+'.';
-    numLabel.style.cssText = 'font-size:11px;color:rgba(0,0,0,.3);flex-shrink:0;width:16px';
-
-    // Deklarasikan inputRefs di sini agar bisa diakses oleh uraianInput keydown
-    const inputRefs = {};
-
-    const uraianInput = document.createElement('input');
-    uraianInput.placeholder = 'Uraian / nama barang...';
-    uraianInput.value = item.uraian;
-    uraianInput.style.cssText = 'flex:1;border:1px solid rgba(0,0,0,.12);border-radius:8px;outline:none;font-size:12px;font-family:\'DM Sans\',sans-serif;background:#fff;color:#1a1a1a;padding:7px 10px';
-    uraianInput.addEventListener('input', ()=>{ item.uraian = uraianInput.value; });
-    uraianInput.addEventListener('keydown', e => {
-      if(e.key === 'Enter') {
-        e.preventDefault();
-        inputRefs.vol?.focus();
-      }
+    row.style.cssText = 'display:grid;grid-template-columns:1fr 52px 80px 90px;gap:0;padding:9px 14px;border-bottom:1px solid rgba(0,0,0,0.05);cursor:pointer;align-items:center';
+    row.onclick = () => openDanaItemForm(idx);
+    row.innerHTML = `
+      <div style="font-size:12px;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(item.uraian||'—')}</div>
+      <div style="font-size:11px;color:rgba(0,0,0,.5);text-align:center">${item.vol||''} ${esc(item.satuan||'')}</div>
+      <div style="font-size:11px;color:rgba(0,0,0,.5);text-align:right">${hSat}</div>
+      <div style="font-size:12px;font-weight:500;color:#2a4a00;text-align:right;font-family:'Space Mono',monospace">${tot?'Rp '+Math.round(tot).toLocaleString('id-ID'):'—'}</div>
+    `;
+    // Swipe/tap to delete via long press
+    let pressTimer;
+    row.addEventListener('touchstart', () => {
+      pressTimer = setTimeout(() => {
+        if(confirm(`Hapus "${item.uraian}"?`)) { danaItems.splice(idx,1); renderDanaItems(); }
+      }, 600);
     });
-    const delBtn = document.createElement('button');
-    delBtn.innerHTML = `<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="rgba(200,50,50,.5)" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>`;
-    delBtn.style.cssText = 'background:none;border:none;cursor:pointer;padding:2px;flex-shrink:0';
-    delBtn.onclick = ()=>delDanaItem(item.id);
-    uraianRow.appendChild(numLabel); uraianRow.appendChild(uraianInput); uraianRow.appendChild(delBtn);
-
-    // Vol + Satuan + Harga Satuan + Total
-    const detailRow = document.createElement('div');
-    detailRow.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 1.2fr 1.2fr;gap:6px;padding-left:24px';
-
-    const fields = [
-      { label:'Vol', key:'vol', type:'number', ph:'0' },
-      { label:'Satuan', key:'satuan', type:'text', ph:'pcs, kg, m...' },
-      { label:'Harga Satuan', key:'hargaSatuan', type:'number', ph:'Rp 0' },
-      { label:'Total Harga', key:'totalHarga', type:'number', ph:'Rp 0' },
-    ];
-    // inputRefs sudah dideklarasikan di atas
-    fields.forEach(f => {
-        const wrap = document.createElement('div');
-        const lbl = document.createElement('div');
-        lbl.textContent = f.label;
-        lbl.style.cssText = 'font-size:9px;color:rgba(0,0,0,.35);letter-spacing:.5px;margin-bottom:3px';
-        const inp = document.createElement('input');
-        inp.type = f.type; inp.placeholder = f.ph;
-        inp.value = f.key === 'satuan' ? (item[f.key] === 'pcs' ? '' : item[f.key]) : item[f.key];
-        inp.style.cssText = 'width:100%;border:1px solid rgba(0,0,0,.12);border-radius:7px;outline:none;font-size:11px;font-family:\'DM Sans\',sans-serif;background:#fff;color:#1a1a1a;padding:6px 8px';
-        inputRefs[f.key] = inp;
-
-        inp.addEventListener('input', ()=>{
-          item[f.key] = inp.value;
-          const vol  = parseFloat(inputRefs.vol?.value) || 0;
-          const hSat = parseFloat(inputRefs.hargaSatuan?.value) || 0;
-          const tot  = parseFloat(inputRefs.totalHarga?.value) || 0;
-
-          if(f.key === 'hargaSatuan' || f.key === 'vol') {
-            if(vol > 0 && hSat > 0) {
-              const hasil = vol * hSat;
-              item.totalHarga = hasil;
-              inputRefs.totalHarga.value = hasil;
-            }
-          } else if(f.key === 'totalHarga') {
-            if(vol > 0 && tot > 0) {
-              const hasil = tot / vol;
-              item.hargaSatuan = Math.round(hasil);
-              inputRefs.hargaSatuan.value = Math.round(hasil);
-            }
-          }
-          calcDanaTotal();
-        });
-
-        // Prefiks x1000 saat blur untuk harga satuan dan total harga
-        if(f.key === 'hargaSatuan' || f.key === 'totalHarga') {
-          inp.addEventListener('blur', ()=>{
-            const val = parseFloat(inp.value);
-            if(!val) return;
-            // Kalau angkanya < 1000 dan tidak ada tanda ribuan → kalikan 1000
-            if(val < 1000 && !inp.value.includes('.')) {
-              const newVal = val * 1000;
-              inp.value = newVal;
-              item[f.key] = newVal;
-              // Recalculate
-              const vol  = parseFloat(inputRefs.vol?.value) || 0;
-              if(f.key === 'hargaSatuan' && vol > 0) {
-                const hasil = vol * newVal;
-                item.totalHarga = hasil;
-                inputRefs.totalHarga.value = hasil;
-              } else if(f.key === 'totalHarga' && vol > 0) {
-                const hasil = newVal / vol;
-                item.hargaSatuan = Math.round(hasil);
-                inputRefs.hargaSatuan.value = Math.round(hasil);
-              }
-              calcDanaTotal();
-            }
-          });
-        }
-
-        // Enter = pindah ke input berikutnya
-        inp.addEventListener('keydown', e => {
-          if(e.key === 'Enter') {
-            e.preventDefault();
-            const allInputs = Array.from(document.querySelectorAll('#d-items-list input'));
-            const idx = allInputs.indexOf(inp);
-            if(idx >= 0 && idx < allInputs.length - 1) allInputs[idx+1].focus();
-            else document.querySelector('#d-items-list')?.closest('.page-body')?.querySelector('button[onclick*="addDanaItem"]')?.click();
-          }
-        });
-
-        wrap.appendChild(lbl); wrap.appendChild(inp);
-        detailRow.appendChild(wrap);
-      });
-
-    row.appendChild(uraianRow); row.appendChild(detailRow);
+    row.addEventListener('touchend', () => clearTimeout(pressTimer));
     el.appendChild(row);
   });
   calcDanaTotal();
+}
+
+function diEnter(e, nextId) {
+  if(e.key !== 'Enter') return;
+  e.preventDefault();
+  // Trigger x1000 dulu sebelum pindah
+  const id = e.target.id;
+  if(id === 'di-harga' || id === 'di-total') {
+    autoX1000DanaItem(id);
+  }
+  if(nextId) document.getElementById(nextId)?.focus();
+  else simpanDanaItem();
+}
+
+function openDanaItemForm(idx) {
+  const isEdit = idx !== null && idx !== undefined;
+  document.getElementById('dana-item-ov-title').textContent = isEdit ? 'Edit Item' : 'Tambah Item';
+  document.getElementById('di-edit-idx').value = isEdit ? idx : '';
+  document.getElementById('di-hapus-btn').style.display = isEdit ? 'block' : 'none';
+  const item = isEdit ? danaItems[idx] : null;
+  document.getElementById('di-uraian').value = item?.uraian || '';
+  document.getElementById('di-vol').value    = item?.vol || '';
+  document.getElementById('di-satuan').value = item?.satuan || '';
+  document.getElementById('di-harga').value  = item?.hargaSatuan || '';
+  document.getElementById('di-total').value  = item?.totalHarga || '';
+  autoCalcDanaItem();
+  openOv('dana-item-ov');
+  setTimeout(() => document.getElementById('di-uraian').focus(), 300);
+}
+
+function autoCalcDanaItem(changed) {
+  const vol   = parseFloat(document.getElementById('di-vol').value) || 0;
+  const harga = parseFloat(document.getElementById('di-harga').value) || 0;
+  const total = parseFloat(document.getElementById('di-total').value) || 0;
+  let hasil = 0;
+
+  if(changed === 'harga') {
+    // Ubah harga satuan → hitung total
+    if(vol > 0 && harga > 0) {
+      hasil = vol * harga;
+      document.getElementById('di-total').value = Math.round(hasil);
+    } else { hasil = harga; }
+  } else if(changed === 'total') {
+    // Ubah total → hitung harga satuan
+    if(vol > 0 && total > 0) {
+      document.getElementById('di-harga').value = Math.round(total / vol);
+      hasil = total;
+    } else { hasil = total; }
+  } else if(changed === 'vol') {
+    // Vol berubah → recalculate dari harga satuan jika ada
+    if(harga > 0 && vol > 0) {
+      hasil = vol * harga;
+      document.getElementById('di-total').value = Math.round(hasil);
+    } else if(total > 0 && vol > 0) {
+      document.getElementById('di-harga').value = Math.round(total / vol);
+      hasil = total;
+    }
+  } else {
+    // Init/load — tampilkan saja nilai yang ada
+    if(vol > 0 && harga > 0) hasil = vol * harga;
+    else if(total > 0) hasil = total;
+    else if(harga > 0) hasil = harga;
+  }
+
+  document.getElementById('di-preview-total').textContent =
+    hasil ? 'Rp ' + Math.round(hasil).toLocaleString('id-ID') : 'Rp 0';
+}
+
+function autoX1000DanaItem(fieldId) {
+  const inp = document.getElementById(fieldId);
+  if(!inp) return;
+  const val = parseFloat(inp.value);
+  if(!val || val >= 1000) return;
+  const newVal = val * 1000;
+  inp.value = newVal;
+  // Trigger recalc dengan changed yang tepat
+  if(fieldId === 'di-harga') autoCalcDanaItem('harga');
+  else if(fieldId === 'di-total') autoCalcDanaItem('total');
+}
+
+function hapusDanaItem() {
+  const idxStr = document.getElementById('di-edit-idx').value;
+  if(idxStr === '') return;
+  const nama = danaItems[parseInt(idxStr)]?.uraian || 'item ini';
+  if(!confirm('Hapus "' + nama + '"?')) return;
+  danaItems.splice(parseInt(idxStr), 1);
+  closeOv('dana-item-ov');
+  renderDanaItems();
+  saveDanaDraft();
+}
+
+function simpanDanaItem() {
+  const uraian = document.getElementById('di-uraian').value.trim();
+  if(!uraian) return showToast('Isi nama barang dulu!');
+  const vol         = document.getElementById('di-vol').value;
+  const satuan      = document.getElementById('di-satuan').value;
+  const hargaSatuan = document.getElementById('di-harga').value;
+  const totalHarga  = document.getElementById('di-total').value;
+  const idxStr      = document.getElementById('di-edit-idx').value;
+  const item = { id: 'di_'+(++danaItemCounter), uraian, vol, satuan, hargaSatuan, totalHarga };
+  if(idxStr !== '') {
+    danaItems[parseInt(idxStr)] = { ...danaItems[parseInt(idxStr)], ...item };
+  } else {
+    danaItems.push(item);
+  }
+  closeOv('dana-item-ov');
+  renderDanaItems();
+  calcDanaTotal();
+  saveDanaDraft();
+}
+
+function addDanaItem() { openDanaItemForm(null); }
+
+function calcDanaTotal() {
+  let total = 0;
+  danaItems.forEach(item => {
+    const t = item.totalHarga ? parseFloat(item.totalHarga) :
+              (parseFloat(item.vol)||0) * (parseFloat(item.hargaSatuan)||0);
+    total += t || 0;
+  });
+  const el = document.getElementById('d-total-nota');
+  if(el) el.textContent = 'Rp ' + Math.round(total).toLocaleString('id-ID');
+  return total;
 }
 
 function ambilFotoDana() {
@@ -2586,6 +2694,33 @@ document.addEventListener('keydown', function(e) {
 
 function tgl(){return new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});}
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ── HARDWARE BACK BUTTON (Android) ──
+function pushState() {
+  history.pushState({ page: 'inner' }, '');
+}
+
+window.addEventListener('popstate', function(e) {
+  // Cek apakah ada overlay aktif
+  const activeOverlay = document.querySelector('.overlay.active');
+  if(activeOverlay) {
+    closeOv(activeOverlay.id);
+    history.pushState({ page: 'inner' }, '');
+    return;
+  }
+  // Cek apakah ada page aktif
+  const pages = document.getElementById('pages');
+  if(pages && pages.classList.contains('active')) {
+    closePage();
+    history.pushState({ page: 'inner' }, '');
+    return;
+  }
+  // Di halaman utama — biarkan browser handle (keluar app)
+  // Tapi push state lagi agar butuh 2x back
+});
+
+// Push state awal agar back pertama tidak langsung keluar
+history.pushState({ page: 'inner' }, '');
 
 // ── CATATAN ──
 function saveCatatan(){
