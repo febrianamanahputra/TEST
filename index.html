@@ -626,6 +626,13 @@ textarea.pg-input { resize:none; height:60px; }
   z-index: 999 !important;
 }
 #photo-ring { position: relative; }
+
+input, textarea, select {
+  text-transform: capitalize;
+}
+input::placeholder, textarea::placeholder {
+  text-transform: none;
+}
 </style>
 </head>
 <body>
@@ -728,6 +735,12 @@ textarea.pg-input { resize:none; height:60px; }
             <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>
           </svg>
         </div>
+        <div class="app-icon icon-tools" onclick="openPage('tools')">
+          <!-- Tools: wrench -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+          </svg>
+        </div>
       </div>
 
       <div id="loc-pill" onclick="openOv('loc-ov')">
@@ -815,7 +828,7 @@ textarea.pg-input { resize:none; height:60px; }
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="rgba(0,0,0,.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <div style="flex:1">
-          <div class="pg-title">Laporan Harian</div>
+          <div class="pg-title">Daily Report</div>
           <div class="pg-sub" id="r-loc-lbl">—</div>
         </div>
         <!-- WA number set button -->
@@ -834,7 +847,7 @@ textarea.pg-input { resize:none; height:60px; }
           <div class="sec-lbl" style="margin-bottom:0">Baris Laporan</div>
           <div style="display:flex;gap:6px;align-items:center">
             <button onclick="openAreaManager()" style="background:none;border:none;font-size:10px;color:rgba(0,0,0,.4);cursor:pointer;display:flex;align-items:center;gap:3px">
-              <svg width="10" height="11" fill="none" viewBox="0 0 12 14" stroke="#4a8800" stroke-width="1.2"><path d="M6 0C3.24 0 1 2.24 1 5c0 3.75 5 9 5 9s5-5.25 5-9C11 2.24 8.76 0 6 0z"/></svg>
+              <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="#4a8800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
               Area
             </button>
             <button onclick="addBaris()" style="background:#aaee00;border:none;border-radius:7px;padding:4px 10px;font-size:10px;font-weight:500;color:#2a4a00;cursor:pointer">+ Baris</button>
@@ -845,7 +858,8 @@ textarea.pg-input { resize:none; height:60px; }
         <!-- KIRIM WA BUTTON -->
         <button onclick="kirimWA()" id="r-kirim-btn" style="width:100%;background:#25D366;border:none;border-radius:10px;padding:12px;font-size:13px;font-weight:500;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;margin-bottom:16px">
           <svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L.054 23.077a.75.75 0 00.92.919l5.265-1.49A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.693-.506-5.234-1.389l-.374-.217-3.876 1.097 1.077-3.788-.234-.386A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-          Kirim ke WhatsApp
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="15" x2="12" y2="3"/><polyline points="17 8 12 3 7 8"/><path d="M20 21H4"/></svg>
+          Upload
         </button>
 
       </div>
@@ -896,6 +910,7 @@ textarea.pg-input { resize:none; height:60px; }
           <button onclick="matTab('request')" id="tab-request" class="mat-tab active-tab">Request</button>
           <button onclick="matTab('tracking')" id="tab-tracking" class="mat-tab">Tracking</button>
           <button onclick="matTab('stock')" id="tab-stock" class="mat-tab">Stok</button>
+          <button onclick="matTab('shop')" id="tab-shop" class="mat-tab">Shop</button>
         </div>
       </div>
 
@@ -922,7 +937,7 @@ textarea.pg-input { resize:none; height:60px; }
 
         <button id="m-kirim-btn" onclick="kirimMaterial()" style="width:100%;background:#25D366;border:none;padding:12px;font-size:13px;font-weight:500;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:8px;margin-top:14px;margin-bottom:4px">
           <svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L.054 23.077a.75.75 0 00.92.919l5.265-1.49A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.693-.506-5.234-1.389l-.374-.217-3.876 1.097 1.077-3.788-.234-.386A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-          Kirim Request (WA & Sheets)
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="15" x2="12" y2="3"/><polyline points="17 8 12 3 7 8"/><path d="M20 21H4"/></svg> Upload
         </button>
       </div>
 
@@ -949,6 +964,18 @@ textarea.pg-input { resize:none; height:60px; }
           Laporan Stok ke WA
         </button>
         <div id="ms-list"><div class="no-data">Stok gudang kosong.</div></div>
+      </div>
+
+      <!-- ── TAB: SHOP ── -->
+      <div id="mat-shop" class="page-body mat-panel" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div class="sec-lbl" style="margin-bottom:0">Daftar Belanja</div>
+          <div style="display:flex;gap:6px">
+
+          </div>
+        </div>
+        <div id="shop-list"></div>
+        <button onclick="shopAddBaris()" style="width:100%;background:none;border:1.5px dashed rgba(170,238,0,.5);border-radius:0;padding:10px;font-size:11px;color:#4a8800;cursor:pointer;margin-top:6px;font-family:'DM Sans',sans-serif">+ Baris</button>
       </div>
 
             <div class="page-nav">
@@ -1033,7 +1060,88 @@ textarea.pg-input { resize:none; height:60px; }
         </div>
       </div>
     </div>
-    <!-- OVERLAY: AREA PICKER (per baris) -->
+            <!-- OVERLAY: TAMBAH/EDIT PEKERJAAN -->
+    <div class="overlay" id="pek-ov" onclick="bgClose(event,'pek-ov')">
+      <div class="sheet" style="max-height:90vh;overflow-y:auto">
+        <div class="sheet-handle"></div>
+        <div class="sheet-hd">
+          <div class="sheet-ttl" id="pek-ov-title">Tambah Pekerjaan</div>
+          <button class="sh-close" onclick="closeOv('pek-ov')">✕</button>
+        </div>
+        <div class="sheet-body" style="display:flex;flex-direction:column;gap:10px;padding-bottom:28px">
+          <input type="hidden" id="pek-edit-id">
+
+          <!-- Nama + AI trigger -->
+          <div class="f-group">
+            <div class="f-label">Nama Pekerjaan</div>
+            <input class="f-input" id="pek-nama" placeholder="contoh: Pengecatan Lt.1"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('pek-tukang').focus()}"
+              oninput="clearTimeout(window._aiTimer);window._aiTimer=setTimeout(aiRekomendasiPekerjaan,900)">
+          </div>
+
+          <!-- AI Box -->
+          <div id="pek-ai-box" style="display:none;background:#f5ffe0;border:1px solid rgba(120,200,0,.2);padding:12px">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
+              <span style="font-size:10px;font-weight:600;color:#4a8800;text-transform:uppercase;letter-spacing:.8px">Rekomendasi AI</span>
+              <div id="pek-ai-loading" style="display:none;width:10px;height:10px;border:2px solid #aaee00;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite"></div>
+            </div>
+            <div id="pek-ai-mat" style="display:none;margin-bottom:8px">
+              <div style="font-size:9px;color:rgba(0,0,0,.4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Material</div>
+              <div id="pek-ai-mat-tags" style="display:flex;flex-wrap:wrap;gap:4px" data-items="[]"></div>
+            </div>
+            <div id="pek-ai-alat" style="display:none">
+              <div style="font-size:9px;color:rgba(0,0,0,.4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Alat</div>
+              <div id="pek-ai-alat-tags" style="display:flex;flex-wrap:wrap;gap:4px" data-items="[]"></div>
+            </div>
+          </div>
+
+          <!-- Material -->
+          <div class="f-group">
+            <div class="f-label">Material <span style="font-size:9px;color:rgba(0,0,0,.35);font-weight:400">— tap AI atau ketik manual</span></div>
+            <div id="pek-mat-tags" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px"></div>
+            <div style="display:flex;gap:6px">
+              <input class="f-input" id="pek-mat-inp" placeholder="Tambah material..."
+                style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();tambahTagManual('mat')}">
+              <button onclick="tambahTagManual('mat')" style="background:#aaee00;border:none;padding:0 12px;font-size:13px;font-weight:600;color:#2a4a00;cursor:pointer">+</button>
+            </div>
+          </div>
+
+          <!-- Alat -->
+          <div class="f-group">
+            <div class="f-label">Alat <span style="font-size:9px;color:rgba(0,0,0,.35);font-weight:400">— tap AI atau ketik manual</span></div>
+            <div id="pek-alat-tags" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px"></div>
+            <div style="display:flex;gap:6px">
+              <input class="f-input" id="pek-alat-inp" placeholder="Tambah alat..."
+                style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();tambahTagManual('alat')}">
+              <button onclick="tambahTagManual('alat')" style="background:#aaee00;border:none;padding:0 12px;font-size:13px;font-weight:600;color:#2a4a00;cursor:pointer">+</button>
+            </div>
+          </div>
+
+          <div class="f-group">
+            <div class="f-label">Tukang / Tenaga</div>
+            <input class="f-input" id="pek-tukang" placeholder="Mandor, Buruh..."
+              onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('pek-target').focus()}">
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="f-group">
+              <div class="f-label">Target Hari</div>
+              <input class="f-input" id="pek-target" type="number" placeholder="6" min="1" max="60"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('pek-persen').focus()}">
+            </div>
+            <div class="f-group">
+              <div class="f-label">Progress (%)</div>
+              <input class="f-input" id="pek-persen" type="number" placeholder="0" min="0" max="100"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();simpanPekerjaan()}">
+            </div>
+          </div>
+
+          <button onclick="simpanPekerjaan()" style="width:100%;background:#aaee00;border:none;padding:13px;font-size:13px;font-weight:500;color:#2a4a00;cursor:pointer;font-family:'DM Sans',sans-serif">Simpan</button>
+          <button id="pek-del-btn" onclick="hapusPekerjaan()" style="width:100%;background:none;border:1px solid rgba(200,50,50,.3);padding:11px;font-size:12px;color:#cc3300;cursor:pointer;display:none;font-family:'DM Sans',sans-serif">Hapus Pekerjaan</button>
+        </div>
+      </div>
+    </div>
+        <!-- OVERLAY: AREA PICKER<!-- OVERLAY: AREA PICKER (per baris) -->
     <div class="overlay" id="area-picker-ov" onclick="bgClose(event,'area-picker-ov')">
       <div class="sheet">
         <div class="sheet-handle"></div>
@@ -1159,6 +1267,83 @@ textarea.pg-input { resize:none; height:60px; }
         </div>
       </div>
     </div>
+        <!-- OVERLAY: AP FORM -->
+    <div class="overlay" id="ap-form-ov" onclick="bgClose(event,'ap-form-ov')">
+      <div class="sheet" style="max-height:90vh;overflow-y:auto">
+        <div class="sheet-handle"></div>
+        <div class="sheet-hd">
+          <div class="sheet-ttl" id="ap-form-title">Tambah Pekerjaan</div>
+          <button class="sh-close" onclick="closeOv('ap-form-ov')">✕</button>
+        </div>
+        <div class="sheet-body" style="padding-bottom:32px;display:flex;flex-direction:column;gap:10px">
+          <input type="hidden" id="ap-edit-id">
+
+          <div>
+            <div style="font-size:10px;color:rgba(0,0,0,.4);margin-bottom:4px">Nama Pekerjaan</div>
+            <input id="ap-nama" class="f-input" placeholder="contoh: Pengecatan Lt.1" style="border-radius:0;width:100%"
+              oninput="clearTimeout(window._apT);window._apT=setTimeout(apCallAI,900)"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('ap-tukang').focus()}">
+          </div>
+
+          <div id="ap-ai-wrap" style="display:none;border-left:3px solid #aaee00;padding:10px 12px;background:rgba(170,238,0,.07)">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+              <span style="font-size:9px;font-weight:600;color:#4a8800;text-transform:uppercase;letter-spacing:1px">AI Rekomendasi</span>
+              <div id="ap-ai-spin" style="display:none;width:10px;height:10px;border:2px solid #aaee00;border-top-color:transparent;border-radius:50%;animation:spin .6s linear infinite"></div>
+            </div>
+            <div id="ap-ai-mat-sec" style="display:none;margin-bottom:8px">
+              <div style="font-size:9px;color:rgba(0,0,0,.4);margin-bottom:4px;text-transform:uppercase;letter-spacing:.8px">Material</div>
+              <div id="ap-ai-mat-tags" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+            </div>
+            <div id="ap-ai-alat-sec" style="display:none">
+              <div style="font-size:9px;color:rgba(0,0,0,.4);margin-bottom:4px;text-transform:uppercase;letter-spacing:.8px">Alat</div>
+              <div id="ap-ai-alat-tags" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:10px;color:rgba(0,0,0,.4);margin-bottom:4px">Material <span style="font-size:9px;opacity:.5">— pilih AI atau ketik</span></div>
+            <div id="ap-mat-pills" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px;min-height:2px"></div>
+            <div style="display:flex">
+              <input id="ap-mat-inp" class="f-input" placeholder="Ketik material..." style="border-radius:0;flex:1;border-right:none"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();apAddItem('mat')}">
+              <button onclick="apAddItem('mat')" style="background:#aaee00;border:1px solid rgba(0,0,0,.12);border-left:none;padding:0 14px;font-size:16px;color:#2a4a00;cursor:pointer;font-weight:700">+</button>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:10px;color:rgba(0,0,0,.4);margin-bottom:4px">Alat <span style="font-size:9px;opacity:.5">— pilih AI atau ketik</span></div>
+            <div id="ap-alat-pills" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px;min-height:2px"></div>
+            <div style="display:flex">
+              <input id="ap-alat-inp" class="f-input" placeholder="Ketik alat..." style="border-radius:0;flex:1;border-right:none"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();apAddItem('alat')}">
+              <button onclick="apAddItem('alat')" style="background:#aaee00;border:1px solid rgba(0,0,0,.12);border-left:none;padding:0 14px;font-size:16px;color:#2a4a00;cursor:pointer;font-weight:700">+</button>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:10px;color:rgba(0,0,0,.4);margin-bottom:4px">Tukang / Tenaga</div>
+            <input id="ap-tukang" class="f-input" placeholder="Mandor, Buruh, Sub-kon..." style="border-radius:0;width:100%"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('ap-target').focus()}">
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div>
+              <div style="font-size:10px;color:rgba(0,0,0,.4);margin-bottom:4px">Target Hari</div>
+              <input id="ap-target" class="f-input" type="number" placeholder="6" min="1" style="border-radius:0;width:100%"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('ap-persen').focus()}">
+            </div>
+            <div>
+              <div style="font-size:10px;color:rgba(0,0,0,.4);margin-bottom:4px">Progress (%)</div>
+              <input id="ap-persen" class="f-input" type="number" placeholder="0" min="0" max="100" style="border-radius:0;width:100%"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();apSave()}">
+            </div>
+          </div>
+
+          <button onclick="apSave()" style="width:100%;background:#aaee00;border:none;padding:13px;font-size:13px;font-weight:600;color:#2a4a00;cursor:pointer;font-family:'DM Sans',sans-serif">Simpan</button>
+          <button id="ap-del-btn" onclick="apDelete()" style="display:none;width:100%;background:none;border:1px solid rgba(200,50,50,.3);padding:11px;font-size:12px;color:#cc3300;cursor:pointer;font-family:'DM Sans',sans-serif">Hapus Pekerjaan</button>
+        </div>
+      </div>
+    </div>
         <div class="overlay" id="stok-ov" onclick="bgClose(event,'stok-ov')">
       <div class="sheet">
         <div class="sheet-handle"></div>
@@ -1189,6 +1374,8 @@ textarea.pg-input { resize:none; height:60px; }
     </div>
     <div class="page" id="page-dana">
       <div class="page-sb"><div class="page-sb-time" id="pg-time-d">00:00</div></div>
+
+      <!-- Header -->
       <div class="page-hd">
         <div class="back-btn" onclick="closePage()">
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="rgba(0,0,0,.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1197,91 +1384,102 @@ textarea.pg-input { resize:none; height:60px; }
           <div class="pg-title">Dana Lapangan</div>
           <div class="pg-sub" id="d-loc-lbl">—</div>
         </div>
+        <!-- No Seri di header -->
+        <div style="display:flex;align-items:center;gap:3px">
+          <button onclick="danaNoSeri(-1)" style="width:22px;height:22px;border:1px solid rgba(0,0,0,.12);background:#fff;border-radius:4px;cursor:pointer;font-size:12px;color:#888;display:flex;align-items:center;justify-content:center">‹</button>
+          <div style="position:relative">
+            <span style="font-size:10px;color:rgba(0,0,0,.35);position:absolute;top:-10px;left:0;width:100%;text-align:center;white-space:nowrap">#</span>
+            <input id="d-no-seri" type="number" min="1" value="1" oninput="updateNoSeri(this.value)" style="width:36px;text-align:center;font-size:14px;font-weight:700;font-family:'Space Mono',monospace;color:#1a1a1a;border:1px solid rgba(0,0,0,.12);background:#fff;outline:none;padding:3px 0;border-radius:4px">
+          </div>
+          <button onclick="danaNoSeri(1)" style="width:22px;height:22px;border:1px solid rgba(0,0,0,.12);background:#fff;border-radius:4px;cursor:pointer;font-size:12px;color:#888;display:flex;align-items:center;justify-content:center">›</button>
+        </div>
       </div>
 
-      <div class="page-body" style="display:flex;flex-direction:column;gap:14px">
+      <div class="page-body" style="display:flex;flex-direction:column;gap:10px;padding-bottom:24px">
 
-        <!-- Header No Seri + Total + Sisa Dana -->
-        <div style="background:#f5ffe0;border:1px solid rgba(120,200,0,0.2);border-radius:12px;padding:14px 16px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <div style="font-size:9px;color:rgba(0,0,0,.4);text-transform:uppercase;letter-spacing:1.5px">Dana Lapangan</div>
-            <div style="font-size:9px;color:rgba(0,0,0,.4);text-transform:uppercase;letter-spacing:1.5px">Total Nota</div>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-            <div style="display:flex;align-items:center;gap:8px">
-              <button onclick="danaNoSeri(-1)" style="width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.08);border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">‹</button>
-              <input id="d-no-seri" type="number" min="1" value="1" oninput="updateNoSeri(this.value)" style="width:52px;text-align:center;font-size:18px;font-weight:700;font-family:'Space Mono',monospace;color:#2a4a00;border:none;background:transparent;outline:none">
-              <button onclick="danaNoSeri(1)" style="width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,0.08);border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">›</button>
+        <!-- Sisa Dana + Total Nota -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div style="background:#f8f8f8;border-radius:8px;padding:10px 12px">
+            <div style="font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px">Sisa Dana</div>
+            <div style="font-size:15px;font-weight:700;color:#2a7a00;font-family:'Space Mono',monospace" id="d-sisa-dana">—</div>
+            <div onclick="fetchSisaDana()" style="font-size:9px;color:#bbb;display:flex;align-items:center;gap:3px;margin-top:3px;cursor:pointer">
+              <svg width="8" height="8" fill="none" viewBox="0 0 24 24" stroke="#bbb" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+              refresh
             </div>
-            <div style="font-size:20px;font-weight:700;color:#2a4a00" id="d-total-nota">Rp 0</div>
           </div>
-          <!-- Sisa Dana dari Spreadsheet -->
-          <div style="border-top:1px solid rgba(120,200,0,0.2);padding-top:10px;display:flex;align-items:center;justify-content:space-between">
-            <div style="display:flex;align-items:center;gap:6px">
-              <div style="font-size:10px;color:rgba(0,0,0,.5)">Sisa Dana</div>
-              <button onclick="fetchSisaDana()" style="background:none;border:none;cursor:pointer;padding:0;opacity:.5" title="Refresh">
-                <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="#2a4a00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
-              </button>
-            </div>
-            <div style="font-size:14px;font-weight:600;color:#2a4a00;font-family:'Space Mono',monospace" id="d-sisa-dana">—</div>
+          <div style="background:#f8f8f8;border-radius:8px;padding:10px 12px">
+            <div style="font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px">Total Nota</div>
+            <div style="font-size:15px;font-weight:700;color:#1a1a1a;font-family:'Space Mono',monospace" id="d-total-nota">Rp 0</div>
           </div>
         </div>
 
-        <!-- Form Nota -->
-        <div style="background:#fff;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;overflow:hidden;font-family:'DM Sans',sans-serif;min-height:200px;display:flex;flex-direction:column">
-
-          <!-- Header nota: Tanggal + Klasifikasi -->
-          <div style="display:flex;border-bottom:1px solid rgba(0,0,0,0.07)">
-            <div style="flex:1;padding:10px 14px;border-right:1px solid rgba(0,0,0,0.07)">
-              <div style="font-size:9px;color:rgba(0,0,0,.35);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">Tanggal</div>
-              <input type="date" id="d-tanggal" style="border:none;outline:none;font-size:12px;font-family:'DM Sans',sans-serif;width:100%;background:transparent;color:#1a1a1a">
-            </div>
-            <div style="flex:1;padding:10px 14px">
-              <div style="font-size:9px;color:rgba(0,0,0,.35);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px">Klasifikasi</div>
-              <select id="d-klasifikasi" style="border:none;outline:none;font-size:12px;font-family:'DM Sans',sans-serif;width:100%;background:transparent;color:#1a1a1a;padding:0">
-                <option value="Bahan">Bahan</option>
-                <option value="Peralatan">Peralatan</option>
-                <option value="Operasional">Operasional</option>
-              </select>
-            </div>
+        <!-- Tanggal + Klasifikasi -->
+        <div style="display:flex;gap:8px">
+          <div style="flex:1;background:#f8f8f8;border-radius:6px;padding:8px 10px">
+            <div style="font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px">Tanggal</div>
+            <input type="date" id="d-tanggal" style="border:none;outline:none;font-size:12px;font-family:'DM Sans',sans-serif;width:100%;background:transparent;color:#1a1a1a;font-weight:500">
           </div>
-
-          <!-- Kolom header tabel -->
-          <div style="display:grid;grid-template-columns:1fr 52px 80px 90px;gap:0;background:rgba(0,0,0,0.02);border-bottom:1px solid rgba(0,0,0,0.07);padding:6px 14px">
-            <div style="font-size:9px;color:rgba(0,0,0,.4);letter-spacing:.8px;text-transform:uppercase">Uraian</div>
-            <div style="font-size:9px;color:rgba(0,0,0,.4);letter-spacing:.8px;text-transform:uppercase;text-align:center">Vol</div>
-            <div style="font-size:9px;color:rgba(0,0,0,.4);letter-spacing:.8px;text-transform:uppercase;text-align:right">Harga Sat.</div>
-            <div style="font-size:9px;color:rgba(0,0,0,.4);letter-spacing:.8px;text-transform:uppercase;text-align:right">Total</div>
+          <div style="flex:1;background:#f8f8f8;border-radius:6px;padding:8px 10px">
+            <div style="font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px">Klasifikasi</div>
+            <select id="d-klasifikasi" style="border:none;outline:none;font-size:12px;font-family:'DM Sans',sans-serif;width:100%;background:transparent;color:#1a1a1a;padding:0;font-weight:500">
+              <option value="Bahan">Bahan</option>
+              <option value="Peralatan">Peralatan</option>
+              <option value="Operasional">Operasional</option>
+            </select>
           </div>
+        </div>
 
-          <!-- Daftar item nota -->
-          <div id="d-items-list"></div>
+        <!-- Nota Box -->
+        <div style="border:1px solid #efefef;border-radius:8px">
+          <!-- Header kolom -->
+          <div style="display:grid;grid-template-columns:1fr 52px 78px 80px;background:#fafafa;padding:6px 12px;border-bottom:1px solid #efefef;border-radius:8px 8px 0 0">
+            <span style="font-size:9px;color:#bbb;text-transform:uppercase;letter-spacing:.6px">Uraian</span>
+            <span style="font-size:9px;color:#bbb;text-transform:uppercase;letter-spacing:.6px;text-align:right">Vol</span>
+            <span style="font-size:9px;color:#bbb;text-transform:uppercase;letter-spacing:.6px;text-align:right">Harga Sat.</span>
+            <span style="font-size:9px;color:#bbb;text-transform:uppercase;letter-spacing:.6px;text-align:right">Total</span>
+          </div>
+          <!-- Items — min-height biar terlihat panjang -->
+          <div id="d-items-list" style="min-height:260px"></div>
+        </div>
 
-          <!-- Tombol + tambah item -->
-          <button onclick="openDanaItemForm(null)" style="width:100%;background:none;border:none;border-top:1.5px dashed rgba(170,238,0,0.5);padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:auto">
-            <div style="width:26px;height:26px;border-radius:50%;background:#aaee00;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#2a4a00;line-height:1">+</div>
-            <span style="font-size:12px;font-weight:500;color:#4a8800">Tambah Item</span>
+        <!-- Total footer -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#f5ffe8;border-radius:8px">
+          <div style="font-size:11px;color:#5a9a00;font-weight:500" id="d-total-label">Total Nota #1</div>
+          <div style="font-size:16px;font-weight:700;color:#2a4a00;font-family:'Space Mono',monospace" id="d-total-footer">Rp 0</div>
+        </div>
+
+        <!-- Foto Nota + Tombol Tambah Item -->
+        <div style="display:flex;gap:8px;align-items:stretch">
+
+          <!-- Tombol tambah item -->
+          <button onclick="openDanaItemForm(null)" style="width:56px;height:64px;background:#aaee00;border:none;border-radius:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex-shrink:0">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#2a4a00" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span style="font-size:9px;font-weight:600;color:#2a4a00;letter-spacing:.3px">Item</span>
           </button>
-        </div>
 
-        <!-- Foto Nota -->
-        <div>
-          <div style="font-size:9px;color:rgba(0,0,0,.35);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px">Foto Nota</div>
-          <div id="d-foto-preview" style="display:none;margin-bottom:6px;position:relative">
-            <img id="d-foto-img" style="width:100%;border-radius:8px;object-fit:cover;max-height:160px">
-            <button onclick="hapusFotoDana()" style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.5);border:none;color:white;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center">×</button>
+          <!-- Preview jika ada foto -->
+          <div id="d-foto-preview" style="display:none;width:64px;height:64px;border-radius:8px;overflow:hidden;flex-shrink:0;position:relative;border:1px solid rgba(0,0,0,.08)">
+            <img id="d-foto-img" style="width:100%;height:100%;object-fit:cover">
+            <button onclick="hapusFotoDana()" style="position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.5);border:none;color:white;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1">×</button>
           </div>
-          <div id="d-foto-btn" onclick="ambilFotoDana()" style="border:1.5px dashed rgba(0,0,0,0.15);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer">
-            <svg width="18" height="16" fill="none" viewBox="0 0 24 20" stroke="rgba(0,0,0,.3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H4a2 2 0 00-2 2v11a2 2 0 002 2h16a2 2 0 002-2V5a2 2 0 00-2-2h-5"/><path d="M9 3l1.5-2h3L15 3"/><circle cx="12" cy="11" r="3.5"/></svg>
-            <span style="font-size:11px;color:rgba(0,0,0,.35)">Tap untuk foto nota</span>
+
+          <!-- Tombol foto -->
+          <div id="d-foto-btn" onclick="ambilFotoDana()" style="flex:1;border:1.5px dashed #d0e8b0;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;background:#fafff5;min-height:64px">
+            <div style="width:32px;height:32px;border-radius:8px;background:#aaee00;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#2a4a00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H4a2 2 0 00-2 2v11a2 2 0 002 2h16a2 2 0 002-2V5a2 2 0 00-2-2h-5"/><path d="M9 3l1.5-2h3L15 3"/><circle cx="12" cy="11" r="3.5"/></svg>
+            </div>
+            <div>
+              <div style="font-size:11px;color:#5a9a00;font-weight:500">Foto Nota</div>
+              <div style="font-size:10px;color:#aaa;margin-top:1px">Kamera atau galeri</div>
+            </div>
           </div>
           <input type="file" id="d-foto-file" accept="image/*" style="display:none" onchange="onFotoDanaSelected(event)">
         </div>
 
-        <!-- Tombol Kirim -->
-        <button onclick="kirimDana()" style="width:100%;background:#25D366;border:none;border-radius:10px;padding:13px;font-size:13px;font-weight:500;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
-          <svg width="15" height="15" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L.054 23.077a.75.75 0 00.92.919l5.265-1.49A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
-          Kirim ke WA & Sheets
+        <!-- Upload button -->
+        <button onclick="kirimDana()" style="width:100%;background:#25D366;border:none;border-radius:8px;padding:12px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="15" x2="12" y2="3"/><polyline points="17 8 12 3 7 8"/><path d="M20 21H4"/></svg>
+          Upload
         </button>
 
         <!-- Riwayat -->
@@ -1296,22 +1494,116 @@ textarea.pg-input { resize:none; height:60px; }
       </div>
     </div>
 
-    <!-- CATATAN -->
-    <div class="page" id="page-catatan">
-      <div class="page-sb">
-        <div class="page-sb-time" id="pg-time-c">00:00</div>
-        <svg width="22" height="11" fill="none" viewBox="0 0 22 11"><rect x=".5" y=".5" width="18" height="10" rx="2.5" stroke="rgba(0,0,0,.25)" stroke-width="1"/><rect x="2" y="2" width="13" height="7" rx="1.5" fill="rgba(0,0,0,.7)"/></svg>
-      </div>
+
+    <!-- TOOLS -->
+    <div class="page" id="page-tools">
+      <div class="page-sb"><div class="page-sb-time" id="pg-time-t">00:00</div></div>
       <div class="page-hd">
         <div class="back-btn" onclick="closePage()">
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="rgba(0,0,0,.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <div><div class="pg-title">Catatan</div><div class="pg-sub">Baris Input Cepat</div></div>
-        <button class="pg-save-btn" style="width:auto;padding:6px 14px;font-size:11px;margin-left:auto" onclick="saveCatatan()">+ Tambah</button>
+        <div style="flex:1"><div class="pg-title">Tools</div><div class="pg-sub" id="t-loc-lbl">—</div></div>
+        <div style="display:flex;gap:2px">
+          <button onclick="toolsTab('action')" id="ttab-action" class="mat-tab active-tab">Action Plan</button>
+          <button onclick="toolsTab('volume')" id="ttab-volume" class="mat-tab">Volume</button>
+          <button onclick="toolsTab('beton')" id="ttab-beton" class="mat-tab">Beton</button>
+        </div>
+      </div>
+
+      <!-- TAB: ACTION PLAN -->
+      <div id="tools-action" class="page-body">
+        <button onclick="apNew()" style="width:100%;background:#aaee00;border:none;padding:11px;font-size:12px;font-weight:500;color:#2a4a00;cursor:pointer;margin-bottom:12px;font-family:'DM Sans',sans-serif">+ Tambah Pekerjaan</button>
+        <div id="ap-list"></div>
+      </div>
+
+            <!-- TAB: HITUNG VOLUME -->
+      <div id="tools-volume" class="page-body" style="display:none">
+        <div style="border:1px solid rgba(0,0,0,.1)">
+          <div style="padding:14px;border-bottom:1px solid rgba(0,0,0,.08)">
+            <div style="font-size:9px;font-weight:600;color:rgba(0,0,0,.35);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px">Luas Persegi</div>
+            <div style="display:flex;gap:10px;align-items:flex-end">
+              <div style="flex:1"><div style="font-size:9px;color:rgba(0,0,0,.4);margin-bottom:4px">Panjang (m)</div><input class="f-input" id="v-p" type="number" inputmode="decimal" placeholder="0" oninput="hitungVolume()" style="border-radius:0;width:100%"></div>
+              <div style="font-size:13px;color:rgba(0,0,0,.3);padding-bottom:10px">×</div>
+              <div style="flex:1"><div style="font-size:9px;color:rgba(0,0,0,.4);margin-bottom:4px">Lebar (m)</div><input class="f-input" id="v-l" type="number" inputmode="decimal" placeholder="0" oninput="hitungVolume()" style="border-radius:0;width:100%"></div>
+              <div style="font-size:13px;color:rgba(0,0,0,.3);padding-bottom:10px">=</div>
+              <div style="flex:1;background:#f5ffe0;padding:8px;text-align:center">
+                <div style="font-size:9px;color:rgba(0,0,0,.4)">Luas</div>
+                <div style="font-size:16px;font-weight:700;color:#2a4a00;font-family:'Space Mono',monospace" id="v-luas">0</div>
+                <div style="font-size:9px;color:rgba(0,0,0,.4)">m²</div>
+              </div>
+            </div>
+          </div>
+          <div style="padding:14px;border-bottom:1px solid rgba(0,0,0,.08)">
+            <div style="font-size:9px;font-weight:600;color:rgba(0,0,0,.35);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px">Volume Kubik</div>
+            <div style="display:flex;gap:6px;align-items:flex-end">
+              <div style="flex:1;min-width:0"><div style="font-size:9px;color:rgba(0,0,0,.4);margin-bottom:4px">P (m)</div><input class="f-input" id="v-kp" type="number" inputmode="decimal" placeholder="0" oninput="hitungVolume()" style="border-radius:0;width:100%"></div>
+              <div style="font-size:13px;color:rgba(0,0,0,.3);padding-bottom:10px">×</div>
+              <div style="flex:1;min-width:0"><div style="font-size:9px;color:rgba(0,0,0,.4);margin-bottom:4px">L (m)</div><input class="f-input" id="v-kl" type="number" inputmode="decimal" placeholder="0" oninput="hitungVolume()" style="border-radius:0;width:100%"></div>
+              <div style="font-size:13px;color:rgba(0,0,0,.3);padding-bottom:10px">×</div>
+              <div style="flex:1;min-width:0"><div style="font-size:9px;color:rgba(0,0,0,.4);margin-bottom:4px">T (m)</div><input class="f-input" id="v-kt" type="number" inputmode="decimal" placeholder="0" oninput="hitungVolume()" style="border-radius:0;width:100%"></div>
+              <div style="font-size:13px;color:rgba(0,0,0,.3);padding-bottom:10px">=</div>
+              <div style="flex:1;min-width:0;background:#f5ffe0;padding:8px;text-align:center">
+                <div style="font-size:9px;color:rgba(0,0,0,.4)">Vol</div>
+                <div style="font-size:16px;font-weight:700;color:#2a4a00;font-family:'Space Mono',monospace" id="v-kubik">0</div>
+                <div style="font-size:9px;color:rgba(0,0,0,.4)">m³</div>
+              </div>
+            </div>
+          </div>
+          <div style="padding:14px">
+            <div style="font-size:9px;font-weight:600;color:rgba(0,0,0,.35);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px">Keliling & Luas Dinding</div>
+            <div style="display:flex;gap:6px;margin-bottom:10px">
+              <div style="flex:1"><div style="font-size:9px;color:rgba(0,0,0,.4);margin-bottom:4px">P (m)</div><input class="f-input" id="v-rp" type="number" inputmode="decimal" placeholder="0" oninput="hitungVolume()" style="border-radius:0;width:100%"></div>
+              <div style="flex:1"><div style="font-size:9px;color:rgba(0,0,0,.4);margin-bottom:4px">L (m)</div><input class="f-input" id="v-rl" type="number" inputmode="decimal" placeholder="0" oninput="hitungVolume()" style="border-radius:0;width:100%"></div>
+              <div style="flex:1"><div style="font-size:9px;color:rgba(0,0,0,.4);margin-bottom:4px">T (m)</div><input class="f-input" id="v-rt" type="number" inputmode="decimal" placeholder="0" oninput="hitungVolume()" style="border-radius:0;width:100%"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div style="background:#f5ffe0;padding:10px;text-align:center"><div style="font-size:9px;color:rgba(0,0,0,.4);margin-bottom:2px">Keliling</div><div style="font-size:18px;font-weight:700;color:#2a4a00;font-family:'Space Mono',monospace" id="v-keliling">0</div><div style="font-size:9px;color:rgba(0,0,0,.4)">m</div></div>
+              <div style="background:#f5ffe0;padding:10px;text-align:center"><div style="font-size:9px;color:rgba(0,0,0,.4);margin-bottom:2px">Luas Dinding</div><div style="font-size:18px;font-weight:700;color:#2a4a00;font-family:'Space Mono',monospace" id="v-dinding">0</div><div style="font-size:9px;color:rgba(0,0,0,.4)">m²</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: BETON/MORTAR -->
+      <div id="tools-beton" class="page-body" style="display:none">
+        <div style="border:1px solid rgba(0,0,0,.1)">
+          <div style="padding:14px;border-bottom:1px solid rgba(0,0,0,.08)">
+            <div style="font-size:9px;font-weight:600;color:rgba(0,0,0,.35);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px">Jenis Campuran</div>
+            <select id="b-jenis" class="f-input" onchange="hitungBeton()" style="border-radius:0;margin-bottom:12px;width:100%">
+              <optgroup label="BETON"><option value="beton_k100">Beton K-100 (1:3:5)</option><option value="beton_k175" selected>Beton K-175 (1:2:3)</option><option value="beton_k225">Beton K-225 (1:1.5:2.5)</option><option value="beton_k300">Beton K-300 (1:1:2)</option></optgroup>
+              <optgroup label="MORTAR"><option value="mortar_12">Mortar 1:2</option><option value="mortar_13">Mortar 1:3</option><option value="mortar_15">Mortar 1:5</option><option value="mortar_16">Mortar 1:6</option></optgroup>
+            </select>
+            <div style="font-size:9px;color:rgba(0,0,0,.4);margin-bottom:4px">Volume (m³)</div>
+            <input class="f-input" id="b-vol" type="number" inputmode="decimal" placeholder="2.5" oninput="hitungBeton()" style="border-radius:0;width:100%">
+          </div>
+          <div id="b-info" style="padding:10px 14px;font-size:10px;color:rgba(0,0,0,.4)"></div>
+          <div id="b-hasil" style="display:none">
+            <div style="padding:8px 14px;background:rgba(170,238,0,.08);border-top:1px solid rgba(0,0,0,.05);border-bottom:1px solid rgba(0,0,0,.05)">
+              <div style="font-size:9px;font-weight:600;color:rgba(0,0,0,.4);text-transform:uppercase;letter-spacing:1px">Kebutuhan Material</div>
+            </div>
+            <div id="b-hasil-isi"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-nav">
+        <div class="nav-btn" style="background:rgba(0,0,0,.2)"></div><div class="nav-btn home" style="background:rgba(0,0,0,.2)"></div><div class="nav-btn" style="background:rgba(0,0,0,.2)"></div>
+      </div>
+    </div>
+
+    <!-- CATATAN -->
+    <div class="page" id="page-catatan">
+      <div class="page-sb"><div class="page-sb-time" id="pg-time-c">00:00</div></div>
+      <div class="page-hd">
+        <div class="back-btn" onclick="closePage()">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="rgba(0,0,0,.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div><div class="pg-title">Catatan</div><div class="pg-sub" id="c-loc-lbl">—</div></div>
       </div>
       <div class="page-body">
-        <div class="pg-form" style="margin-bottom:12px">
-          <textarea class="pg-input" id="c-input" placeholder="Tulis catatan..." style="height:72px"></textarea>
+        <div class="pg-form">
+          <textarea class="pg-input" id="c-input" placeholder="Tulis catatan..." rows="3" style="resize:none"></textarea>
+          <button class="pg-save-btn" onclick="saveCatatan()">Simpan Catatan</button>
         </div>
         <div class="sec-lbl">Catatan Tersimpan</div>
         <div id="c-list"><div class="no-data">Belum ada catatan.</div></div>
@@ -1361,7 +1653,7 @@ const DAYS=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 function tick(){
   const n=new Date();
   const hm=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
-  ['sb-time','sb-time-small','pg-time-r','pg-time-m','pg-time-d','pg-time-c','pg-time-l'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=hm;});
+  ['sb-time','sb-time-small','pg-time-r','pg-time-m','pg-time-d','pg-time-c','pg-time-l','pg-time-t'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=hm;});
   document.getElementById('month-big').textContent=MONTHS[n.getMonth()];
   document.getElementById('day-name').textContent=DAYS[n.getDay()]+',';
   document.getElementById('date-full').textContent=String(n.getDate()).padStart(2,'0')+' '+MONTHS[n.getMonth()]+' '+n.getFullYear();
@@ -1414,10 +1706,11 @@ function closeOv(id){document.getElementById(id).classList.remove('active');}
 function bgClose(e,id){if(e.target===document.getElementById(id))closeOv(id);}
 
 function getLD(id){
-  if(!S.locData[id]) S.locData[id]={reports:[],materials:[],dana:[],catatan:[],links:[],areas:[]};
+  if(!S.locData[id]) S.locData[id]={reports:[],materials:[],dana:[],catatan:[],links:[],areas:[],pekerjaan:[]};
   if(!S.locData[id].catatan) S.locData[id].catatan=[];
   if(!S.locData[id].links) S.locData[id].links=[];
   if(!S.locData[id].areas) S.locData[id].areas=[];
+  if(!S.locData[id].pekerjaan) S.locData[id].pekerjaan=[];
   return S.locData[id];
 }
 
@@ -1511,6 +1804,7 @@ function openPage(id){
   }
   if(id==='material'){document.getElementById('m-loc-lbl').textContent=ln;initMaterial();}
   if(id==='dana'){document.getElementById('d-loc-lbl').textContent=ln;initDana();}
+  if(id==='tools'){document.getElementById('t-loc-lbl').textContent=ln;initTools();}
   if(id==='catatan'){renderCatatan();}
   if(id==='link'){renderLinks();}
 }
@@ -1954,13 +2248,102 @@ function initMaterial() {
 }
 
 function matTab(tab) {
-  ['request','tracking','stock'].forEach(t => {
-    document.getElementById('mat-'+t).style.display = t===tab ? 'block' : 'none';
+  ['request','tracking','stock','shop'].forEach(t => {
+    const p = document.getElementById('mat-'+t);
+    if(p) p.style.display = t===tab ? 'block' : 'none';
     const btn = document.getElementById('tab-'+t);
     if(btn) btn.classList.toggle('active-tab', t===tab);
   });
   if(tab==='tracking') loadTracking();
   if(tab==='stock') loadStock();
+  if(tab==='shop') shopRender();
+}
+
+// ══ SHOP ══
+let shopItems = [];
+let shopCounter = 0;
+
+function shopRender() {
+  const el = document.getElementById('shop-list');
+  if(!el) return;
+  if(!shopItems.length) { shopAddBaris(true); shopAddBaris(true); shopAddBaris(true); }
+  shopDraw();
+}
+
+function shopAddBaris(silent) {
+  shopCounter++;
+  shopItems.push({ id:'sh_'+shopCounter, nama:'', jumlah:'' });
+  if(!silent) shopDraw();
+}
+
+function shopDraw() {
+  const el = document.getElementById('shop-list');
+  if(!el) return;
+  el.innerHTML = '';
+  shopItems.forEach((item, idx) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:0;margin-bottom:4px';
+
+    // No
+    const no = document.createElement('div');
+    no.textContent = idx+1+'.';
+    no.style.cssText = 'width:22px;flex-shrink:0;font-size:11px;color:rgba(0,0,0,.3);padding:10px 4px 10px 0;display:flex;align-items:center';
+
+    // Nama barang
+    const nama = document.createElement('input');
+    nama.className = 'f-input';
+    nama.placeholder = 'Nama barang...';
+    nama.value = item.nama;
+    nama.style.cssText = 'flex:1.6;border-radius:0;border-right:none';
+    nama.oninput = () => { item.nama = nama.value; };
+    nama.onkeydown = e => {
+      if(e.key==='Enter') { e.preventDefault(); jumlah.focus(); }
+    };
+
+    // Jumlah + satuan
+    const jumlah = document.createElement('input');
+    jumlah.className = 'f-input';
+    jumlah.placeholder = 'Jml / Satuan';
+    jumlah.value = item.jumlah;
+    jumlah.style.cssText = 'flex:1;border-radius:0';
+    jumlah.oninput = () => { item.jumlah = jumlah.value; };
+    jumlah.onkeydown = e => {
+      if(e.key==='Enter') {
+        e.preventDefault();
+        const all = document.querySelectorAll('#shop-list input');
+        const i = Array.from(all).indexOf(jumlah);
+        if(i < all.length-1) all[i+1].focus();
+        else { shopAddBaris(); setTimeout(()=>{ const updated=document.querySelectorAll('#shop-list input'); updated[updated.length-2].focus(); },30); }
+      }
+    };
+
+    // Del button
+    const del = document.createElement('button');
+    del.innerHTML = '×';
+    del.style.cssText = 'background:none;border:1px solid rgba(0,0,0,.1);border-left:none;padding:0 10px;font-size:14px;color:rgba(0,0,0,.3);cursor:pointer;border-radius:0';
+    del.onclick = () => { shopItems.splice(idx,1); shopDraw(); };
+
+    row.appendChild(no);
+    row.appendChild(nama);
+    row.appendChild(jumlah);
+    row.appendChild(del);
+    el.appendChild(row);
+  });
+}
+
+function shopKirimWA() {
+  const terisi = shopItems.filter(x=>x.nama.trim());
+  if(!terisi.length) return showToast('Isi dulu nama barang!');
+  const loc = S.locations.find(l=>l.id===S.activeLoc);
+  const lines = terisi.map((x,i)=>`${i+1}. ${x.nama.trim()}${x.jumlah?' — '+x.jumlah:''}`).join('\n');
+  const text = `*Daftar Belanja*${loc?' — '+loc.name:''}\n\n${lines}`;
+  window.location.href = `whatsapp://send?text=${encodeURIComponent(text)}`;
+}
+
+function shopReset() {
+  shopItems = []; shopCounter = 0;
+  shopAddBaris(true); shopAddBaris(true); shopAddBaris(true);
+  shopDraw();
 }
 
 // ── ITEMS ──
@@ -2078,7 +2461,7 @@ async function kirimMaterial() {
     sheetSent = true;
   } catch(e) { sheetSent = false; }
 
-  btn.innerHTML = `<svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L.054 23.077a.75.75 0 00.92.919l5.265-1.49A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.693-.506-5.234-1.389l-.374-.217-3.876 1.097 1.077-3.788-.234-.386A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg> Kirim Request (WA & Sheets)`;
+  btn.innerHTML = `<svg width="16" height="16" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.857L.054 23.077a.75.75 0 00.92.919l5.265-1.49A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.693-.506-5.234-1.389l-.374-.217-3.876 1.097 1.077-3.788-.234-.386A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg> <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="15" x2="12" y2="3"/><polyline points="17 8 12 3 7 8"/><path d="M20 21H4"/></svg> Upload`;
   btn.disabled = false;
 
   sheetSent
@@ -2176,7 +2559,7 @@ function renderTracking() {
 async function batalRequest(rowId) {
   const t = trackingData.find(x=>(x.rowId||x.id)===rowId);
   const nama = t ? (t.nama || t.items?.[0]?.nama || 'item') : 'item';
-  if(!confirm(`Batalkan request "${nama}"? Data akan dihapus dari Spreadsheet.`)) return;
+  if(!window.confirm('Batalkan request? Data akan dihapus dari Spreadsheet.')) return;
 
   const ld = S.activeLoc ? getLD(S.activeLoc) : null;
   let ok = false;
@@ -2196,7 +2579,7 @@ async function batalRequest(rowId) {
   }
   trackingData = trackingData.filter(x=>(x.rowId||x.id)!==rowId);
   renderTracking();
-  showToast(ok ? `"${nama}" berhasil dihapus.` : 'Gagal menghapus dari Spreadsheet. Cek koneksi.');
+  showToast(ok ? 'Berhasil dihapus.' : 'Gagal menghapus dari Spreadsheet. Cek koneksi.');
 }
 
 function followUpWA(rowId) {
@@ -2390,13 +2773,14 @@ function simpanStok() {
 function hapusStok() {
   const key = document.getElementById('stok-edit-key').value;
   if(!key) return;
-  if(!confirm('Hapus material ini dari stok?')) return;
+  if(!window.confirm('Hapus material ini dari stok?')) return;
   const ld = S.activeLoc ? getLD(S.activeLoc) : null;
   if(ld && ld.stock) { delete ld.stock[key]; save(); }
   stockData = stockData.filter(s=>s.nama.toLowerCase()!==key);
   closeOv('stok-ov');
   renderStock(document.getElementById('ms-search').value);
   showToast('Material dihapus.');
+
 }
 
 function filterStock(){ renderStock(document.getElementById('ms-search').value); }
@@ -2404,7 +2788,7 @@ function filterStock(){ renderStock(document.getElementById('ms-search').value);
 async function clearZeroStock() {
   const zeros = stockData.filter(s=>parseFloat(s.stok)===0);
   if(!zeros.length) return showToast('Tidak ada material dengan stok kosong.');
-  if(!confirm(`Hapus ${zeros.length} item material yang stoknya 0?`)) return;
+  if(!window.confirm('Hapus '+zeros.length+' item stok 0?')) return;
   const scriptUrl = (S.activeLoc ? getLD(S.activeLoc).scriptUrl : '') || DEFAULT_SCRIPT_URL;
   const loc = S.locations.find(l=>l.id===S.activeLoc);
   if(scriptUrl){
@@ -2510,8 +2894,9 @@ function loadDanaDraft(noSeri) {
       document.getElementById('d-foto-btn').style.display = 'flex';
     }
   } else {
-    // Draft baru
+      // Draft baru — 5 baris default
     danaItems = []; danaItemCounter = 0; danaFotoBlob = null; danaFotoUrl = null;
+    for(let i=0;i<5;i++) danaItems.push({id:'di_'+(++danaItemCounter),uraian:'',vol:'',satuan:'',hargaSatuan:'',totalHarga:''});
     document.getElementById('d-tanggal').value = new Date().toISOString().split('T')[0];
     document.getElementById('d-foto-preview').style.display = 'none';
     document.getElementById('d-foto-btn').style.display = 'flex';
@@ -2559,43 +2944,23 @@ function updateNoSeri(val) {
 function renderDanaItems() {
   const el = document.getElementById('d-items-list');
   el.innerHTML = '';
-  if(!danaItems.length) { calcDanaTotal(); return; }
   danaItems.forEach((item, idx) => {
     const tot = item.totalHarga ? parseFloat(item.totalHarga) :
                 (parseFloat(item.vol)||0) * (parseFloat(item.hargaSatuan)||0);
-    const hSat = item.hargaSatuan ? 'Rp '+Math.round(parseFloat(item.hargaSatuan)).toLocaleString('id-ID') : '—';
+    const hSat = item.hargaSatuan ? Math.round(parseFloat(item.hargaSatuan)).toLocaleString('id-ID') : '';
+    const totStr = tot ? Math.round(tot).toLocaleString('id-ID') : '';
     const row = document.createElement('div');
-    row.style.cssText = 'display:grid;grid-template-columns:1fr 52px 80px 90px;gap:0;padding:9px 14px;border-bottom:1px solid rgba(0,0,0,0.05);cursor:pointer;align-items:center';
+    row.style.cssText = 'display:grid;grid-template-columns:1fr 52px 78px 80px;padding:9px 12px;border-bottom:1px solid #efefef;align-items:center;cursor:pointer;min-height:38px';
     row.onclick = () => openDanaItemForm(idx);
     row.innerHTML = `
-      <div style="font-size:12px;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(item.uraian||'—')}</div>
-      <div style="font-size:11px;color:rgba(0,0,0,.5);text-align:center">${item.vol||''} ${esc(item.satuan||'')}</div>
-      <div style="font-size:11px;color:rgba(0,0,0,.5);text-align:right">${hSat}</div>
-      <div style="font-size:12px;font-weight:500;color:#2a4a00;text-align:right;font-family:'Space Mono',monospace">${tot?'Rp '+Math.round(tot).toLocaleString('id-ID'):'—'}</div>
+      <div style="font-size:12px;color:${item.uraian?'#1a1a1a':'#ccc'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${item.uraian ? esc(item.uraian) : '—'}</div>
+      <div style="font-size:11px;color:#999;text-align:right">${item.vol||''} ${esc(item.satuan||'')}</div>
+      <div style="font-size:11px;color:#999;text-align:right">${hSat}</div>
+      <div style="font-size:12px;font-weight:600;color:#2a7a00;text-align:right;font-family:'Space Mono',monospace">${totStr}</div>
     `;
-    // Swipe/tap to delete via long press
-    let pressTimer;
-    row.addEventListener('touchstart', () => {
-      pressTimer = setTimeout(() => {
-        if(confirm(`Hapus "${item.uraian}"?`)) { danaItems.splice(idx,1); renderDanaItems(); }
-      }, 600);
-    });
-    row.addEventListener('touchend', () => clearTimeout(pressTimer));
     el.appendChild(row);
   });
   calcDanaTotal();
-}
-
-function diEnter(e, nextId) {
-  if(e.key !== 'Enter') return;
-  e.preventDefault();
-  // Trigger x1000 dulu sebelum pindah
-  const id = e.target.id;
-  if(id === 'di-harga' || id === 'di-total') {
-    autoX1000DanaItem(id);
-  }
-  if(nextId) document.getElementById(nextId)?.focus();
-  else simpanDanaItem();
 }
 
 function openDanaItemForm(idx) {
@@ -2668,7 +3033,7 @@ function hapusDanaItem() {
   const idxStr = document.getElementById('di-edit-idx').value;
   if(idxStr === '') return;
   const nama = danaItems[parseInt(idxStr)]?.uraian || 'item ini';
-  if(!confirm('Hapus "' + nama + '"?')) return;
+  if(!window.confirm('Hapus area ini?')) return;
   danaItems.splice(parseInt(idxStr), 1);
   closeOv('dana-item-ov');
   renderDanaItems();
@@ -2697,6 +3062,15 @@ function simpanDanaItem() {
 
 function addDanaItem() { openDanaItemForm(null); }
 
+function diEnter(e, nextId) {
+  if(e.key !== 'Enter') return;
+  e.preventDefault();
+  const id = e.target.id;
+  if(id === 'di-harga' || id === 'di-total') autoX1000DanaItem(id);
+  if(nextId) document.getElementById(nextId)?.focus();
+  else simpanDanaItem();
+}
+
 function calcDanaTotal() {
   let total = 0;
   danaItems.forEach(item => {
@@ -2704,8 +3078,15 @@ function calcDanaTotal() {
               (parseFloat(item.vol)||0) * (parseFloat(item.hargaSatuan)||0);
     total += t || 0;
   });
+  const fmt = 'Rp ' + Math.round(total).toLocaleString('id-ID');
   const el = document.getElementById('d-total-nota');
-  if(el) el.textContent = 'Rp ' + Math.round(total).toLocaleString('id-ID');
+  if(el) el.textContent = fmt;
+  const ef = document.getElementById('d-total-footer');
+  if(ef) ef.textContent = fmt;
+  // Update label with no seri
+  const noSeri = document.getElementById('d-no-seri')?.value || '1';
+  const el2 = document.getElementById('d-total-label');
+  if(el2) el2.textContent = 'Total Nota #' + noSeri;
   return total;
 }
 
@@ -2931,8 +3312,394 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
+// ── CUSTOM CONFIRM (cross-platform, works in iframe) ──
+function appConfirm(msg, onYes) {
+  const ov = document.getElementById('app-confirm-ov');
+  document.getElementById('app-confirm-msg').textContent = msg;
+  ov.style.display = 'flex';
+  document.getElementById('app-confirm-yes').onclick = () => {
+    ov.style.display = 'none';
+    onYes();
+  };
+  document.getElementById('app-confirm-no').onclick = () => {
+    ov.style.display = 'none';
+  };
+}
+
 function tgl(){return new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});}
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ══════════════════════════════
+// TOOLS PAGE
+// ══════════════════════════════
+function initTools() {
+  toolsTab('action');
+}
+
+function toolsTab(tab) {
+  ['action','volume','beton'].forEach(t => {
+    const p = document.getElementById('tools-'+t);
+    if(p) p.style.display = t===tab ? 'block' : 'none';
+    const b = document.getElementById('ttab-'+t);
+    if(!b) return;
+    b.classList.toggle('active-tab', t===tab);
+  });
+  if(tab==='action') apRender();
+  if(tab==='volume') hitungVolume();
+  if(tab==='beton')  hitungBeton();
+}
+
+// ══════════════════════
+// ACTION PLAN — clean build
+// ══════════════════════
+let _apMat  = [];
+let _apAlat = [];
+let _apAiMat  = [];
+let _apAiAlat = [];
+
+function apResetAll() {
+  if(!S.activeLoc) return;
+  appConfirm('Hapus SEMUA pekerjaan di lokasi ini?', ()=>{
+  const ld = getLD(S.activeLoc);
+  ld.pekerjaan = [];
+  delete window._apOpen;
+  save();
+  apRender();
+  showToast('Semua pekerjaan dihapus');
+  });
+}
+
+function apNew() {
+  _apMat=[]; _apAlat=[]; _apAiMat=[]; _apAiAlat=[];
+  document.getElementById('ap-edit-id').value = '';
+  document.getElementById('ap-del-btn').style.display = 'none';
+  document.getElementById('ap-form-title').textContent = 'Tambah Pekerjaan';
+  document.getElementById('ap-ai-wrap').style.display = 'none';
+  ['ap-nama','ap-tukang','ap-target','ap-persen','ap-mat-inp','ap-alat-inp'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  apDrawPills();
+  openOv('ap-form-ov');
+  setTimeout(()=>document.getElementById('ap-nama').focus(),300);
+}
+
+function apEdit(id) {
+  if(!S.activeLoc) return;
+  const p=(getLD(S.activeLoc).pekerjaan||[]).find(x=>x.id===id);
+  if(!p) return;
+  _apMat=[...(p.material||[])]; _apAlat=[...(p.alat||[])];
+  _apAiMat=[]; _apAiAlat=[];
+  document.getElementById('ap-edit-id').value=id;
+  document.getElementById('ap-del-btn').style.display='block';
+  document.getElementById('ap-form-title').textContent='Edit Pekerjaan';
+  document.getElementById('ap-ai-wrap').style.display='none';
+  document.getElementById('ap-nama').value=p.nama||'';
+  document.getElementById('ap-tukang').value=p.tukang||'';
+  document.getElementById('ap-target').value=p.targetHari||'';
+  document.getElementById('ap-persen').value=p.persen||0;
+  document.getElementById('ap-mat-inp').value='';
+  document.getElementById('ap-alat-inp').value='';
+  apDrawPills();
+  openOv('ap-form-ov');
+}
+
+function apDrawPills() {
+  const matEl  = document.getElementById('ap-mat-pills');
+  const alatEl = document.getElementById('ap-alat-pills');
+  if(matEl)  matEl.innerHTML  = _apMat.map((v,i)=>
+    `<span style="display:inline-flex;align-items:center;gap:3px;background:#aaee00;padding:2px 8px;font-size:11px;color:#2a4a00">${esc(v)}<button onclick="_apMat.splice(${i},1);apDrawPills()" style="background:none;border:none;cursor:pointer;font-size:13px;color:#4a8800;padding:0;line-height:1">×</button></span>`).join('');
+  if(alatEl) alatEl.innerHTML = _apAlat.map((v,i)=>
+    `<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(0,0,0,.07);padding:2px 8px;font-size:11px;color:#1a1a1a">${esc(v)}<button onclick="_apAlat.splice(${i},1);apDrawPills()" style="background:none;border:none;cursor:pointer;font-size:13px;color:rgba(0,0,0,.4);padding:0;line-height:1">×</button></span>`).join('');
+}
+
+function apDrawAiTags() {
+  const matEl  = document.getElementById('ap-ai-mat-tags');
+  const alatEl = document.getElementById('ap-ai-alat-tags');
+  if(matEl)  matEl.innerHTML  = _apAiMat.map(v=>{
+    const on=_apMat.includes(v);
+    return `<button onclick="apAiToggle('mat','${v.replace(/'/g,'\\x27')}')" style="font-size:11px;padding:3px 10px;border:1.5px solid ${on?'#4a8800':'rgba(0,0,0,.12)'};background:${on?'#aaee00':'transparent'};color:${on?'#2a4a00':'#1a1a1a'};cursor:pointer;font-family:'DM Sans',sans-serif">${esc(v)}</button>`;
+  }).join('');
+  if(alatEl) alatEl.innerHTML = _apAiAlat.map(v=>{
+    const on=_apAlat.includes(v);
+    return `<button onclick="apAiToggle('alat','${v.replace(/'/g,'\\x27')}')" style="font-size:11px;padding:3px 10px;border:1.5px solid ${on?'rgba(0,0,0,.5)':'rgba(0,0,0,.12)'};background:${on?'rgba(0,0,0,.08)':'transparent'};color:#1a1a1a;cursor:pointer;font-family:'DM Sans',sans-serif">${esc(v)}</button>`;
+  }).join('');
+}
+
+function apAiToggle(type, val) {
+  const arr = type==='mat' ? _apMat : _apAlat;
+  const i   = arr.indexOf(val);
+  if(i>=0) arr.splice(i,1); else arr.push(val);
+  apDrawPills();
+  apDrawAiTags();
+}
+
+function apAddItem(type) {
+  const inp = document.getElementById(type==='mat'?'ap-mat-inp':'ap-alat-inp');
+  const v   = inp.value.trim();
+  if(!v) return;
+  const arr = type==='mat' ? _apMat : _apAlat;
+  if(!arr.includes(v)) arr.push(v);
+  inp.value='';
+  apDrawPills();
+}
+
+async function apCallAI() {
+  const nama = document.getElementById('ap-nama').value.trim();
+  if(nama.length < 3) return;
+  const wrap = document.getElementById('ap-ai-wrap');
+  const spin = document.getElementById('ap-ai-spin');
+  wrap.style.display='block';
+  spin.style.display='inline-block';
+  document.getElementById('ap-ai-mat-sec').style.display='none';
+  document.getElementById('ap-ai-alat-sec').style.display='none';
+  _apAiMat=[]; _apAiAlat=[];
+  try {
+    const res  = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,
+        messages:[{role:'user',content:'Pekerjaan konstruksi: "'+nama+'". Rekomendasikan material dan alat. Jawab HANYA JSON: {"material":["..."],"alat":["..."]}. Maks 6 per kategori, singkat.'}]
+      })
+    });
+    const data = await res.json();
+    const txt  = (data.content?.[0]?.text||'').match(/\{[\s\S]*\}/);
+    if(txt) {
+      const r = JSON.parse(txt[0]);
+      if(r.material?.length){ _apAiMat=r.material; document.getElementById('ap-ai-mat-sec').style.display='block'; }
+      if(r.alat?.length)    { _apAiAlat=r.alat;    document.getElementById('ap-ai-alat-sec').style.display='block'; }
+      apDrawAiTags();
+    }
+  } catch(e){ wrap.style.display='none'; }
+  spin.style.display='none';
+}
+
+function apSave() {
+  if(!S.activeLoc) return showToast('Pilih lokasi dulu!');
+  const nama = document.getElementById('ap-nama').value.trim();
+  if(!nama)  return showToast('Isi nama pekerjaan!');
+  const ld   = getLD(S.activeLoc);
+  if(!ld.pekerjaan) ld.pekerjaan=[];
+  const editId = document.getElementById('ap-edit-id').value;
+  const data   = {
+    nama, material:[..._apMat], alat:[..._apAlat],
+    tukang:    document.getElementById('ap-tukang').value.trim(),
+    targetHari:parseInt(document.getElementById('ap-target').value)||6,
+    persen:    Math.min(100,Math.max(0,parseInt(document.getElementById('ap-persen').value)||0)),
+    hariKerja: editId ? ((ld.pekerjaan.find(x=>x.id===editId)||{}).hariKerja||[]) : [],
+  };
+  if(editId) {
+    const idx=ld.pekerjaan.findIndex(x=>x.id===editId);
+    if(idx>=0) ld.pekerjaan[idx]={...ld.pekerjaan[idx],...data};
+  } else {
+    ld.pekerjaan.push({id:'ap_'+Date.now(),tgl:tgl(),...data});
+  }
+  save(); closeOv('ap-form-ov'); apRender();
+
+}
+
+function apDelete() {
+  const id=document.getElementById('ap-edit-id').value;
+  if(!id||!S.activeLoc) return;
+  appConfirm('Hapus pekerjaan ini?', ()=>{
+  const ld=getLD(S.activeLoc);
+  ld.pekerjaan=(ld.pekerjaan||[]).filter(x=>x.id!==id);
+  save(); closeOv('ap-form-ov'); apRender();
+  }); }
+
+function apDone(id) {
+  if(!S.activeLoc) return;
+  const ld=getLD(S.activeLoc);
+  const p=(ld.pekerjaan||[]).find(x=>x.id===id);
+  if(!p) return; appConfirm('Tandai "'+p.nama+'" selesai dan hapus?', ()=>{
+  ld.pekerjaan=ld.pekerjaan.filter(x=>x.id!==id);
+  delete (window._apOpen||{})[id];
+  save(); apRender(); showToast('Selesai ✓');
+  });
+}
+
+function apToggle(id) {
+  if(!window._apOpen) window._apOpen={};
+  window._apOpen[id]=!window._apOpen[id];
+  apRender();
+}
+
+function apTick(id, hari) {
+  if(!S.activeLoc) return;
+  const ld=getLD(S.activeLoc);
+  const p=(ld.pekerjaan||[]).find(x=>x.id===id);
+  if(!p) return;
+  if(!p.hariKerja) p.hariKerja=[];
+  const i=p.hariKerja.indexOf(hari);
+  if(i>=0) p.hariKerja.splice(i,1); else p.hariKerja.push(hari);
+  save(); apRender();
+}
+
+function apAddHari(id) {
+  if(!S.activeLoc) return;
+  const ld=getLD(S.activeLoc);
+  const p=(ld.pekerjaan||[]).find(x=>x.id===id);
+  if(!p) return;
+  p.targetHari=(p.targetHari||6)+1;
+  save(); apRender();
+}
+
+function apRender() {
+  const el=document.getElementById('ap-list');
+  if(!el) return;
+  if(!S.activeLoc){el.innerHTML='<div class="no-data">Pilih lokasi dulu.</div>';return;}
+  const ld=getLD(S.activeLoc);
+  const list=ld.pekerjaan||[];
+  if(!list.length){el.innerHTML='<div class="no-data">Belum ada pekerjaan.</div>';return;}
+  el.innerHTML=list.map(p=>{
+    const target=p.targetHari||6;
+    const kerja=p.hariKerja||[];
+    const persen=Math.min(100,Math.max(0,p.persen||0));
+    const clr=persen>=100?'#25D366':persen>=50?'#aaee00':'#f59e0b';
+    const open=!!(window._apOpen||{})[p.id];
+    const boxes=Array.from({length:target},(_,i)=>{
+      const h=i+1,on=kerja.includes(h);
+      return `<button onclick="apTick('${p.id}',${h})" style="width:26px;height:26px;border:1.5px solid ${on?'#25D366':'rgba(0,0,0,.15)'};background:${on?'#25D366':'transparent'};cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:${on?'#fff':'rgba(0,0,0,.4)'}">${on?'<svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':h}</button>`;
+    }).join('');
+    return `<div style="border:1px solid rgba(0,0,0,.1);margin-bottom:6px">
+      <div onclick="apToggle('${p.id}')" style="display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:5px">${esc(p.nama)}</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="flex:1;height:3px;background:rgba(0,0,0,.08)"><div style="width:${persen}%;height:100%;background:${clr}"></div></div>
+            <span style="font-size:10px;font-weight:700;color:${clr}">${persen}%</span>
+            <span style="font-size:10px;color:rgba(0,0,0,.3)">${kerja.length}/${target}hr</span>
+          </div>
+        </div>
+        <button onclick="event.stopPropagation();apEdit('${p.id}')" style="background:none;border:none;cursor:pointer;padding:3px;opacity:.4;flex-shrink:0">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="rgba(0,0,0,.3)" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;transform:rotate(${open?180:0}deg)"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      ${open?`<div style="border-top:1px solid rgba(0,0,0,.07);padding:12px">
+        ${(p.material&&p.material.length)?`<div style="padding-bottom:9px;margin-bottom:9px;border-bottom:1px solid rgba(0,0,0,.05)">
+          <div style="font-size:9px;font-weight:700;color:rgba(0,0,0,.3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Material</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px">${p.material.map(m=>`<span style="font-size:11px;background:#f0ffe0;padding:2px 8px;color:#2a4a00">${esc(m)}</span>`).join('')}</div>
+        </div>`:''}
+        ${(p.alat&&p.alat.length)?`<div style="padding-bottom:9px;margin-bottom:9px;border-bottom:1px solid rgba(0,0,0,.05)">
+          <div style="font-size:9px;font-weight:700;color:rgba(0,0,0,.3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Alat</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px">${p.alat.map(a=>`<span style="font-size:11px;background:rgba(0,0,0,.05);padding:2px 8px;color:#1a1a1a">${esc(a)}</span>`).join('')}</div>
+        </div>`:''}
+        ${p.tukang?`<div style="padding-bottom:9px;margin-bottom:9px;border-bottom:1px solid rgba(0,0,0,.05)">
+          <div style="font-size:9px;font-weight:700;color:rgba(0,0,0,.3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Tukang</div>
+          <span style="font-size:12px;color:#1a1a1a">${esc(p.tukang)}</span>
+        </div>`:''}
+        <div style="margin-bottom:10px">
+          <div style="font-size:9px;font-weight:700;color:rgba(0,0,0,.3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Progress Hari — ${kerja.length}/${target}</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap">
+            ${boxes}
+            <button onclick="apAddHari('${p.id}')" style="width:26px;height:26px;border:1.5px dashed rgba(0,0,0,.2);background:transparent;cursor:pointer;font-size:14px;color:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center">+</button>
+          </div>
+        </div>
+        <button onclick="apDone('${p.id}')" style="width:100%;background:#25D366;border:none;padding:10px;font-size:12px;font-weight:600;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Selesai — Hapus Pekerjaan
+        </button>
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+
+function toolsTab(tab) {
+  ['action','volume','beton'].forEach(t => {
+    const el = document.getElementById('tools-'+t);
+    if(el) el.style.display = t===tab?'block':'none';
+    const btn = document.getElementById('ttab-'+t);
+    if(!btn) return;
+    btn.classList.toggle('active-tab', t===tab);
+  });
+  if(tab==='action') apRender();
+  if(tab==='volume') hitungVolume();
+  if(tab==='beton')  hitungBeton();
+}
+
+function hitungVolume() {
+  const p = parseFloat(document.getElementById('v-p')?.value) || 0;
+  const l = parseFloat(document.getElementById('v-l')?.value) || 0;
+  const el_luas = document.getElementById('v-luas');
+  if(el_luas) el_luas.textContent = (p*l).toFixed(2) + ' m²';
+
+  const kp = parseFloat(document.getElementById('v-kp')?.value) || 0;
+  const kl = parseFloat(document.getElementById('v-kl')?.value) || 0;
+  const kt = parseFloat(document.getElementById('v-kt')?.value) || 0;
+  const el_kubik = document.getElementById('v-kubik');
+  if(el_kubik) el_kubik.textContent = (kp*kl*kt).toFixed(3) + ' m³';
+
+  const rp = parseFloat(document.getElementById('v-rp')?.value) || 0;
+  const rl = parseFloat(document.getElementById('v-rl')?.value) || 0;
+  const rt = parseFloat(document.getElementById('v-rt')?.value) || 0;
+  const keliling = 2*(rp+rl);
+  const el_kel = document.getElementById('v-keliling');
+  const el_din = document.getElementById('v-dinding');
+  if(el_kel) el_kel.textContent = keliling.toFixed(2) + ' m';
+  if(el_din) el_din.textContent = (keliling*rt).toFixed(2) + ' m²';
+}
+
+// ── KALKULATOR BETON/MORTAR ──
+const BETON_RASIO = {
+  beton_k100: { semen:1, pasir:3, kerikil:5, air:0.5, nama:'Beton K-100 (1:3:5)' },
+  beton_k175: { semen:1, pasir:2, kerikil:3, air:0.5, nama:'Beton K-175 (1:2:3)' },
+  beton_k225: { semen:1, pasir:1.5, kerikil:2.5, air:0.4, nama:'Beton K-225 (1:1.5:2.5)' },
+  beton_k300: { semen:1, pasir:1, kerikil:2, air:0.4, nama:'Beton K-300 (1:1:2)' },
+  mortar_12:  { semen:1, pasir:2, air:0.5, nama:'Mortar 1:2' },
+  mortar_13:  { semen:1, pasir:3, air:0.5, nama:'Mortar 1:3' },
+  mortar_15:  { semen:1, pasir:5, air:0.6, nama:'Mortar 1:5' },
+  mortar_16:  { semen:1, pasir:6, air:0.7, nama:'Mortar 1:6' },
+};
+// Faktor konversi: 1 zak semen = 40kg = ±0.028 m³ curah
+const SEMEN_ZAK_M3 = 0.028;
+const PASIR_BERAT_M3 = 1400; // kg/m³
+
+function hitungBeton() {
+  const jenis = document.getElementById('b-jenis')?.value;
+  const vol   = parseFloat(document.getElementById('b-vol')?.value) || 0;
+  const r     = BETON_RASIO[jenis];
+  if(!r) return;
+
+  const total = r.semen + (r.pasir||0) + (r.kerikil||0);
+  const infoEl = document.getElementById('b-info');
+  const hasilEl = document.getElementById('b-hasil');
+  const hasilIsi = document.getElementById('b-hasil-isi');
+
+  // Info rasio
+  const isBeton = jenis.startsWith('beton');
+  infoEl.innerHTML = `<b>${r.nama}</b><br>Rasio: ${r.semen} Semen : ${r.pasir} Pasir${r.kerikil?' : '+r.kerikil+' Kerikil':''}`;
+
+  if(!vol) { hasilEl.style.display = 'none'; return; }
+
+  // Hitung kebutuhan per komponen (faktor susut ~1.3)
+  const faktorSusut = 1.3;
+  const volBruto = vol * faktorSusut;
+
+  const volSemen   = (r.semen / total) * volBruto;    // m³ curah
+  const zakSemen   = Math.ceil(volSemen / SEMEN_ZAK_M3); // zak @40kg
+  const volPasir   = (r.pasir / total) * volBruto;
+  const volKerikil = r.kerikil ? (r.kerikil / total) * volBruto : 0;
+  const volAir     = vol * r.air * 1000; // liter
+
+  const fmt = (n, d=2) => n.toFixed(d).replace('.', ',');
+
+  hasilIsi.innerHTML = [
+    { label:'Semen', val:`${zakSemen} zak`, sub:`${zakSemen*40} kg` },
+    { label:'Pasir', val:`${fmt(volPasir)} m³`, sub:`${Math.ceil(volPasir*PASIR_BERAT_M3)} kg` },
+    ...(volKerikil ? [{ label:'Kerikil / Split', val:`${fmt(volKerikil)} m³`, sub:`${Math.ceil(volKerikil*1600)} kg` }] : []),
+    { label:'Air', val:`${fmt(volAir,0)} liter`, sub:'' },
+  ].map((row, i, arr) => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 14px;${i<arr.length-1?'border-bottom:1px solid rgba(0,0,0,.06)':''}">
+      <span style="font-size:12px;color:#1a1a1a">${row.label}</span>
+      <div style="text-align:right">
+        <div style="font-size:14px;font-weight:700;color:#2a4a00;font-family:'Space Mono',monospace">${row.val}</div>
+        ${row.sub ? `<div style="font-size:9px;color:rgba(0,0,0,.4)">${row.sub}</div>` : ''}
+      </div>
+    </div>
+  `).join('') + `<div style="padding:8px 14px;font-size:9px;color:rgba(0,0,0,.35);border-top:1px solid rgba(0,0,0,.06)">*Faktor susut 30% sudah termasuk. Volume bersih: ${fmt(vol)} m³</div>`;
+  hasilEl.style.display = 'block';
+}
+
+
 
 // ── HARDWARE BACK BUTTON (Android) ──
 function pushState() {
@@ -3111,5 +3878,16 @@ function pickFromCamera() {
 // ── DEFAULT PHOTO (embedded) ──
 window.DEFAULT_PHOTO = window._DEFAULT_PHOTO || null;
 </script>
+  <!-- APP CONFIRM MODAL -->
+  <div id="app-confirm-ov" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.45);align-items:center;justify-content:center;padding:24px">
+    <div style="background:#fff;width:100%;max-width:320px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,.2)">
+      <div id="app-confirm-msg" style="font-size:13px;color:#1a1a1a;margin-bottom:18px;line-height:1.5;font-family:'DM Sans',sans-serif"></div>
+      <div style="display:flex;gap:8px">
+        <button id="app-confirm-no" style="flex:1;background:none;border:1px solid rgba(0,0,0,.15);padding:10px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;color:#1a1a1a">Batal</button>
+        <button id="app-confirm-yes" style="flex:1;background:#cc3300;border:none;padding:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;color:#fff">Hapus</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
