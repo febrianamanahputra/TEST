@@ -3182,20 +3182,27 @@ async function kirimDana() {
   document.getElementById('d-no-seri').value = ld.danaNoSeri;
   save();
 
-  // Kirim ke Sheets
+  // Kirim ke Sheets — gunakan for loop bukan forEach agar await benar
   try {
-    terisi.forEach(async x => {
+    for(const x of terisi) {
       const tot = x.totalHarga ? parseFloat(x.totalHarga) : (parseFloat(x.vol)||0)*(parseFloat(x.hargaSatuan)||0);
       await scriptPost({
         action: 'addDana',
         sheet: getSheetName()+'_Dana',
-        no: noSeri, tanggal: fmtDate(tanggal),
-        uraian: x.uraian, klasifikasi,
-        vol: x.vol, satuan: x.satuan,
-        hargaSatuan: x.hargaSatuan||'', total: Math.round(tot)
+        no: noSeri,
+        tanggal: fmtDate(tanggal),
+        uraian: x.uraian,
+        klasifikasi,
+        vol: x.vol||'',
+        satuan: x.satuan||'',
+        hargaSatuan: x.hargaSatuan||'',
+        total: Math.round(tot)||''
       });
-    });
-  } catch(e) {}
+    }
+    showToast('Data masuk Spreadsheet ✓');
+  } catch(e) {
+    showToast('Gagal kirim ke Spreadsheet, cek koneksi');
+  }
 
   showToast('Dana lapangan dikirim!');
   // Reset items
